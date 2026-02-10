@@ -45,7 +45,7 @@ class GradientDescent(object):
         
         pass
     
-    def plot_2d():
+    def plot_2d(self):
         """  que grafique cómo fue la trayectoria a la hora de resolverlo  """
         pass
 
@@ -53,8 +53,6 @@ class GradientDescent(object):
 def main():
     """  Docstring for main  """
 
-
-# functions here
 
 
 if __name__ == "__main__":

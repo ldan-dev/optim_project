@@ -30,15 +30,15 @@ class Function():
         
         # todo: implement function
 
-    def diff() -> np.ndarray:
+    def diff(self) -> np.ndarray:
         """  1st derivate  """
         pass
 
-    def ddiff() -> np.ndarray:
+    def ddiff(self) -> np.ndarray:
         """  2nd derivate  """
         pass
 
-    def plot_2d():
+    def plot_2d(self):
         """  plot the function  """
         pass
 
