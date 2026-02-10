@@ -1,3 +1,20 @@
+# virtual environments
+.venv/
+venv/
+ENV/
+env/
+venv/
+ENV.bak/
+venv.bak/
+
+*.zip
+*.rar
+*.tar.gz
+*.egg
+*.egg-info/
+
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

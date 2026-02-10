@@ -6,19 +6,46 @@ Universidad de Guanajuato - Campus Irapuato-Salamanca
 Email: ld.avinaneri@ugto.mx
 UDA: 
 DESCRIPTION: 
-py -3.13 -m venv venv
-venv""Scripts""activate
-pip install -r requirements.txt
-conda create -n env_name python=3.13 -y
-conda activate env_name
-python -m pip install -r requirements.txt
+
 """
+
+import numpy as np
+from plot import Plot # clase Plot
+
+class Function():
+    """
+    Docstring for Function
+    """
+    def __init__(self, params):
+        pass
+
+    def eval(self, x: np.ndarray) -> np.ndarray:
+        """Evaluate the function"""
+        
+        x = np.asarray(x) # convert to array
+        if not isinstance(x, np.ndarray):
+            raise TypeError("x must be a numpy.ndarray")
+        if not np.issubdtype(x.dtype, np.number):
+            raise TypeError("x must have numerical elements")
+        
+        # todo: implement function
+
+    def diff() -> np.ndarray:
+        """  1st derivate  """
+        pass
+
+    def ddiff() -> np.ndarray:
+        """  2nd derivate  """
+        pass
+
+    def plot_2d():
+        """  plot the function  """
+        pass
+
+
 
 def main():
     """  Docstring for main  """
-
-
-# functions here
 
 
 if __name__ == "__main__":

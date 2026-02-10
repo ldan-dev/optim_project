@@ -9,13 +9,26 @@ DESCRIPTION:
 
 
 """
-# import pandas
+import matplotlib.pyplot as plt
+import numpy as np
+
+class Plot():
+    def __init__(self):
+        """
+        docstring
+        """
+        pass
+
+    def canvas():
+        """  Docstring for canvas  """
+        pass
 
 def main():
-    """  Docstring for main  """
-    print('hello')
 
-# functions here
+    # aqui probar la clase
+
+    my_plot = Plot()
+    my_plot.canvas()
 
 
 if __name__ == "__main__":
