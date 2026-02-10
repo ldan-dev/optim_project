@@ -24,9 +24,19 @@ class GradientDescent(object):
     Docstring for GradientDescent
     """
     def __init__(self, params):
+        """
+        Constructor que definirá los parámetros a usar, las iteraciones máximas, etc.
+        """
         pass
 
+    def solve():
+        """  Lo q implementa el algoritmo  """
+        pass
     
+    def plot_2d():
+        """  que grafique cómo fue la trayectoria a la hora de resolverlo  """
+        pass
+
 
 def main():
     """  Docstring for main  """
