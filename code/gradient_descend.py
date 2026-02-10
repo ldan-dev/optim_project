@@ -31,16 +31,18 @@ class GradientDescent(object):
         - func: the objective function 
         - alpha: learning rate
         - max_it: maximum number of iterations
-        - tolerance: 
+        - tolerance: avoid infinite loop
         """
         
         self.func = func
-        self.alpha = alpha
+        self.alpha = alpha # learning rate
         self.max_it = max_it
         self.tolerance = tolerance
+        self.path = [] # points historial for ploting
 
-    def solve():
+    def solve(self, start_point:float):
         """  Implementación del algoritmo  """
+        
         pass
     
     def plot_2d():
