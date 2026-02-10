@@ -23,14 +23,24 @@ class GradientDescent(object):
     """
     Docstring for GradientDescent
     """
-    def __init__(self, params):
+
+    def __init__(self, func:Function, alpha=0.01, max_it=10000, tolerance=1e-6): 
         """
-        Constructor que definirá los parámetros a usar, las iteraciones máximas, etc.
+        Constructor que definirá los parámetros a usar, las iteraciones máximas, etc
+
+        - func: the objective function 
+        - alpha: learning rate
+        - max_it: maximum number of iterations
+        - tolerance: 
         """
-        pass
+        
+        self.func = func
+        self.alpha = alpha
+        self.max_it = max_it
+        self.tolerance = tolerance
 
     def solve():
-        """  Lo q implementa el algoritmo  """
+        """  Implementación del algoritmo  """
         pass
     
     def plot_2d():
