@@ -13,8 +13,10 @@ class Func_Sphere(Function):
     """
     Docstring for Func_Sphere
     """
-    def __init__(self, params):
+    def __init__(self):
         pass
+    def eval(self, x: np.ndarray) -> float:
+        return np.sum(x**2)
 
 def main():
     """  Docstring for main  """
