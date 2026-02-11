@@ -19,14 +19,15 @@ class Func_Sphere(Function):
         pass
     def eval(self, x: np.ndarray) -> float:
         return np.sum(x**2)
-    def diff(self, x: np.ndarray)
+    def diff(self, x: np.ndarray) -> np.ndarray:
+        return 2 * np.array(x)
+    def ddiff(self, x: np.ndarray) -> np.ndarray:
+        return 2 * np.eye(len(x))
 
 def main():
     """  Docstring for main  """
-
-
-# functions here
-
-
+    canvas1 = Plot()
+    f1 = Sphere()
+        
 if __name__ == "__main__":
     main()
