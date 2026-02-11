@@ -31,16 +31,61 @@ class Plot():
         self.ax.grid(True, linestyle='--', alpha=0.6)
         return self.fig, self.ax
 
+
+    # LO NUEVO
+    def draw_contours(self, function_obj, range_val=[-10, 10], density=100): # <--- NUEVO
+        """
+        Dibuja los círculos de nivel (contour) de la función que le pases.
+        """
+        if self.ax is None:
+            print("¡Error! Primero tienes que llamar a .canvas()")
+            return
+
+        # 1. Preparar el piso (Meshgrid)
+        x = np.linspace(range_val[0], range_val[1], density)
+        y = np.linspace(range_val[0], range_val[1], density)
+        X, Y = np.meshgrid(x, y)
+
+        # 2. Calcular alturas (Z) usando la función que te pasen
+        # (Aquí asumimos que function_obj tiene un método .eval())
+        Z = np.zeros_like(X)
+
+        # Un doble for simple para asegurar que funcione con cualquier función
+        for i in range(len(x)):
+            for j in range(len(y)):
+                # Creamos el punto [x, y]
+                point = np.array([X[i, j], Y[i, j]])
+                # Le preguntamos la altura a la función
+                Z[i, j] = function_obj.eval(point)
+
+        # 3. Dibujar los contornos
+        # levels=20 son los círculos, cmap es el color
+        contour = self.ax.contour(X, Y, Z, levels=20, cmap='viridis')
+        
+        # Opcional: Agregar una barra de color para saber qué altura es
+        self.fig.colorbar(contour, ax=self.ax) 
+    # ---------------------------------------------------------
+
     def show(self):
         """  Docstring for show  """
         plt.show()
+
+# --- CLASE DUMMY PARA PROBAR (SOLO PARA QUE VEAS QUE FUNCIONA) ---
+class DummySphere:
+    def eval(self, x):
+        return x[0]**2 + x[1]**2  # x^2 + y^2
 
 def main():
 
     # aqui probar la clase
 
-    my_plot = Plot('titulo')
+    my_plot = Plot('Mapa de niveles (prueba)')
     my_plot.canvas()
+
+    esfera_falsa = DummySphere()
+
+    my_plot.draw_contours(esfera_falsa)
+    
     my_plot.show()
 
 if __name__ == "__main__":
