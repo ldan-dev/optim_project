@@ -13,20 +13,21 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 class Plot():
-    def __init__(self, title:str):
+    def __init__(self, title:str, figsize=(8, 6)):
         """
         docstring
         """
         self.fig = None
         self.ax = None
         self.title = title
+        self.figsize = figsize
 
-    def canvas(self):
+    def canvas(self, xlabel='x', ylabel='y'):
         """  Docstring for canvas  """
         self.fig, self.ax = plt.subplots(figsize=(8, 6))
         self.ax.set_title(self.title)
-        self.ax.set_xlabel("X")
-        self.ax.set_ylabel("Y")
+        self.ax.set_xlabel(xlabel)
+        self.ax.set_ylabel(ylabel)
         self.ax.grid(True, linestyle='--', alpha=0.6)
         return self.fig, self.ax
 

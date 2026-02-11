@@ -38,8 +38,8 @@ class Function():
         """  2nd derivate  """
         pass
 
-    def plot_2d(self):
-        """  plot the function  """
+    def plot_2d(self, lim:list[float], canva:Plot ):
+        """  plot the function:  """
         pass
 
 

@@ -24,7 +24,7 @@ class GradientDescent(object):
     Docstring for GradientDescent
     """
 
-    def __init__(self, func:Function, alpha=0.01, max_it=10000, tolerance=1e-6): 
+    def __init__(self, func:Function, step_size=1, alpha=0.01, max_it=10000, tolerance=1e-6): 
         """
         Constructor que definirá los parámetros a usar, las iteraciones máximas, etc
 
@@ -35,6 +35,7 @@ class GradientDescent(object):
         """
         
         self.func = func
+        self.step_size = step_size
         self.alpha = alpha # learning rate
         self.max_it = max_it
         self.tolerance = tolerance
@@ -46,7 +47,7 @@ class GradientDescent(object):
         pass
     
     def plot_2d(self):
-        """  que grafique cómo fue la trayectoria a la hora de resolverlo  """
+        """  que grafique cómo fue la trayectoria a la hora de resolverlo  puntos con su linea de path"""
         pass
 
 
