@@ -15,7 +15,7 @@ import numpy as np
 class Plot():
     def __init__(self, title:str, figsize=(8, 6)):
         """
-        docstring
+        esta clase debe de poder
         """
         self.fig = None
         self.ax = None
