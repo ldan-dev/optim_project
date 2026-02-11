@@ -58,6 +58,22 @@ python -m pip install -r requirements.txt
 
 - [Github](https://github.com/ldan-dev)
 
+# Actividades
+- Caleb: sphere
+- Regina: plot niveles (los circulos)
+- Alex: cigarro
+- Emmanuel: descenso gradiente
+- Dani: rose
+
+Para crear su rama:
+```bash
+git checkout -b "incial-nombre_actividad"
+```
+Por ejemplo:
+```bash
+git checkout -b "a_cigarro" # Para Alex
+```
+
 # Clone the repository
 To clone this repository, use the following command:
 ```bash
