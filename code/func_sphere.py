@@ -7,6 +7,8 @@ Email: ld.avinaneri@ugto.mx
 UDA: 
 DESCRIPTION: 
 """
+import numpy as np
+import matplotlib.pyplot as plt
 from function import Function
 
 class Func_Sphere(Function):
@@ -17,6 +19,8 @@ class Func_Sphere(Function):
         pass
     def eval(self, x: np.ndarray) -> float:
         return np.sum(x**2)
+    def diff(self, x: np.ndarray) -> np.ndarray:
+        return 2 * np.array(x)
 
 def main():
     """  Docstring for main  """
