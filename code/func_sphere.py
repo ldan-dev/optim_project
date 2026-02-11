@@ -22,7 +22,7 @@ class Func_Sphere(Function):
     def diff(self, x: np.ndarray) -> np.ndarray:
         return 2 * np.array(x)
     def ddiff(self, x: np.ndarray) -> np.ndarray:
-        return 2 * np.eye(len(x))
+        return 2 * np.eye(len(x)) #matriz identidad de len(x)
 
 def main():
     """  Docstring for main  """
