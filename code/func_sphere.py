@@ -19,8 +19,7 @@ class Func_Sphere(Function):
         pass
     def eval(self, x: np.ndarray) -> float:
         return np.sum(x**2)
-    def diff(self, x: np.ndarray) -> np.ndarray:
-        return 2 * np.array(x)
+    def diff(self, x: np.ndarray)
 
 def main():
     """  Docstring for main  """
