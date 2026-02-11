@@ -9,7 +9,7 @@ DESCRIPTION:
 """
 from function import Function
 
-class Func_Sphere():
+class Func_Sphere(Function):
     """
     Docstring for Func_Sphere
     """
