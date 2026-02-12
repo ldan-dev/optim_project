@@ -17,6 +17,18 @@ class Func_Cigarro(Function):
         pass
     def eval(self, x: np.ndarray) -> float:
         return np.sum(x**2) + 1000000 * np.sum(x[1:]**2)
+    def diff(self, x: np.ndarray) -> np.ndarray:
+        if x == 1:
+            return 2 * x
+        else:
+            return 2000000 * x
+    def ddiff(self, x: np.ndarray) -> np.ndarray:
+        if x == 1:
+            return 2
+        else: 
+            return 2000000
+        
+    
 
 def main():
     """  Docstring for main  """
