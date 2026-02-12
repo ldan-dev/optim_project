@@ -8,13 +8,15 @@ UDA:
 DESCRIPTION: 
 """
 from function import Function
-
+import numpy as np
 class Func_Cigarro(Function):
     """
     Docstring for Func_Cigarro
     """
     def __init__(self, params):
         pass
+    def eval(self, x: np.ndarray) -> float:
+        return np.sum(x**2) + 1000000 * np.sum(x[1:]**2)
 
 def main():
     """  Docstring for main  """
