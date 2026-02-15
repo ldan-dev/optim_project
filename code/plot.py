@@ -31,6 +31,27 @@ class Plot():
         self.ax.grid(True, linestyle='--', alpha=0.6)
         return self.fig, self.ax
 
+    def contour(self, X, Y, Z, levels=50):
+        """
+        Create contour plot
+        
+        Parameters:
+        -----------
+        X, Y : np.ndarray
+            Meshgrid arrays for x and y coordinates
+        Z : np.ndarray
+            Function values at each (x, y) point
+        levels : int
+            Number of contour levels
+        """
+        if self.ax is None:
+            self.canvas()
+        
+        contour = self.ax.contour(X, Y, Z, levels=levels, cmap='viridis', alpha=0.6)
+        self.ax.clabel(contour, inline=True, fontsize=8)
+        contour_filled = self.ax.contourf(X, Y, Z, levels=levels, cmap='viridis', alpha=0.3)
+        self.fig.colorbar(contour_filled, ax=self.ax)
+    
     def show(self):
         """  Docstring for show  """
         plt.show()

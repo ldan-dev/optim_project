@@ -23,16 +23,7 @@ class Func_Rosen(Function):
     
     def eval(self, x: np.ndarray) -> float:
         """
-        Evaluate the Rosenbrock function at point x
-        
-        Parameters:
-        -----------
-        x : np.ndarray
-            Input vector
-            
-        Returns:
-        --------
-        float : Function value at x
+        Evaluate the Rosenbrock function at point x        
         """
         x = np.asarray(x)
         if not isinstance(x, np.ndarray):
@@ -47,55 +38,36 @@ class Func_Rosen(Function):
         
         return result
     
+
     def diff(self, x: np.ndarray) -> np.ndarray:
         """
-        Compute the gradient (first derivative) of Rosenbrock function
-        
-        Parameters:
-        -----------
-        x : np.ndarray
-            Input vector
-            
-        Returns:
-        --------
-        np.ndarray : Gradient vector at x
+        return the gradient vector at x (1st derivative)
         """
-        x = np.asarray(x, dtype=float)
+        x = self._Function__validate_x(x)
         d = len(x)
         grad = np.zeros(d)
         
-        # Based on your notes:
-        # ∂F/∂x_i = -2(1-x_i) - 400x_i(x_{i+1}-x_i^2)  for i < d
-        # ∂F/∂x_i = 200(x_i - x_{i-1}^2)                for i > 1
+        if d == 1:
+            return grad
         
-        # First element
-        if d > 1:
-            grad[0] = -2*(1 - x[0]) - 400*x[0]*(x[1] - x[0]**2)
+        # i=1
+        grad[0] = 2*(x[0] - 1) - 400*x[0]*(x[1] - x[0]**2)
         
-        # Middle elements
+        # i = 2, 3, ... , n 
         for i in range(1, d-1):
-            grad[i] = 200*(x[i] - x[i-1]**2) - 2*(1 - x[i]) - 400*x[i]*(x[i+1] - x[i]**2)
+            grad[i] = 2*(x[i] - 1) + 200*(x[i] - x[i-1]**2 - 2*x[i]*(x[i+1] - x[i]**2) )
         
-        # Last element
-        if d > 1:
-            grad[d-1] = 200*(x[d-1] - x[d-2]**2)
+        # i = n
+        grad[d-1] = 200*(x[d-1] - x[d-2]**2)
         
         return grad
     
+    
     def ddiff(self, x: np.ndarray) -> np.ndarray:
         """
-        Compute the Hessian (second derivative) of Rosenbrock function
-        
-        Parameters:
-        -----------
-        x : np.ndarray
-            Input vector
-            
-        Returns:
-        --------
-        np.ndarray : Hessian matrix at x
+        return the Hessian matrix at x (2nd derivative) 
         """
-        x = np.asarray(x, dtype=float)
+        x = self._Function__validate_x(x)
         d = len(x)
         H = np.zeros((d, d))
         
@@ -144,20 +116,33 @@ class Func_Rosen(Function):
 
 
 def main():
-    # Create instance
     f = Func_Rosen()
     
-    # Test evaluation
-    x_test = np.array([1.0, 1.0])
-    print(f"F({x_test}) = {f.eval(x_test)}")
+    # x_test = np.array([1.0, 1.0])
     
     # Test gradient
-    x_test2 = np.array([0.0, 0.0])
+    x_test2 = np.array([10.0, 10.0])
+    print(f"F({x_test2}) = {f.eval(x_test2)}")
+    
     print(f"∇F({x_test2}) = {f.diff(x_test2)}")
     
     # Test Hessian
     print(f"∇²F({x_test2}) =\n{f.ddiff(x_test2)}")
-
+    
+    # # Test plot
+    # print("\nGenerando gráfica 2D de la función de Rosenbrock...")
+    # plot_obj = Plot("Función de Rosenbrock")
+    # plot_obj.canvas(xlabel='x1', ylabel='x2')
+    
+    # # Límites para visualizar bien la función (el mínimo está en [1,1])
+    # lim = [-2, 2, -1, 3]  # [xmin, xmax, ymin, ymax]
+    # f.plot_2d(lim, plot_obj)
+    
+    # # Marcar el mínimo global en [1, 1]
+    # plot_obj.ax.plot(1, 1, 'r*', markersize=15, label='Mínimo global (1,1)')
+    # plot_obj.ax.legend()
+    
+    # plot_obj.show()
 
 if __name__ == "__main__":
     main()

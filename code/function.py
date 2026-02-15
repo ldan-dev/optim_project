@@ -14,7 +14,7 @@ from plot import Plot # clase Plot
 
 class Function():
     """
-    Docstring for Function
+    Function abstract class
     """
     def __init__(self, params):
         pass
@@ -22,11 +22,7 @@ class Function():
     def eval(self, x: np.ndarray) -> np.ndarray:
         """Evaluate the function"""
         
-        x = np.asarray(x) # convert to array
-        if not isinstance(x, np.ndarray):
-            raise TypeError("x must be a numpy.ndarray")
-        if not np.issubdtype(x.dtype, np.number):
-            raise TypeError("x must have numerical elements")
+        x = self.__validate_x(x)
         
         # todo: implement function
 
@@ -42,6 +38,14 @@ class Function():
         """  plot the function:  """
         pass
 
+    def __validate_x(self, x):
+        x = np.asarray(x, dtype=float) # convert to array
+        if not isinstance(x, np.ndarray):
+            raise TypeError("x must be a numpy.ndarray")
+        if not np.issubdtype(x.dtype, np.number):
+            raise TypeError("x must have numerical elements")
+        
+        return x
 
 
 def main():
