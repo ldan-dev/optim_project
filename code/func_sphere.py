@@ -10,13 +10,15 @@ DESCRIPTION:
 import numpy as np
 import matplotlib.pyplot as plt
 from function import Function
+from plot import Plot
 
 class Func_Sphere(Function):
     """
     Docstring for Func_Sphere
     """
-    def __init__(self):
-        pass
+    def __init__(self, limits=[-5, 5]):
+        self.limits = limits
+        self.path = []
     def eval(self, x: np.ndarray) -> float:
         return np.sum(x**2)
     def diff(self, x: np.ndarray) -> np.ndarray:
