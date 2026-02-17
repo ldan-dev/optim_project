@@ -54,6 +54,7 @@ class Plot():
                 Z[i, j] = function_obj.eval(point)
 
         # 3. Dibujar los contornos
+        contour = self.ax.contour(X, Y, >, levels = 20, cmap = 'viridis')
         # Se verifica si ya hay colorbar
         if not self.fig.axes or len(self.fig.axes) < 2:
             self.fig.colorbar(contour, ax = self.ax)
