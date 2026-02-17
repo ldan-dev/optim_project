@@ -54,7 +54,7 @@ class Plot():
                 Z[i, j] = function_obj.eval(point)
 
         # 3. Dibujar los contornos
-        contour = self.ax.contour(X, Y, >, levels = 20, cmap = 'viridis')
+        contour = self.ax.contour(X, Y, Z, levels = 20, cmap = 'viridis')
         # Se verifica si ya hay colorbar
         if not self.fig.axes or len(self.fig.axes) < 2:
             self.fig.colorbar(contour, ax = self.ax)
@@ -64,7 +64,7 @@ class Plot():
         Dibuja el camino sobre el plano.
         """
         if self.ax is None:
-            print("Error: No se ha mandado llamar a .canvas())
+            print("Error: No se ha mandado llamar a .canvas()")
             return 
 
         path = np.array(path_points)
