@@ -28,8 +28,16 @@ class Func_Sphere(Function):
 
 def main():
     """  Docstring for main  """
-    canvas1 = Plot()
-    f1 = Sphere()
+    canvas1 = Plot(title="Gráfica de la Esfera")
+    canvas1.canvas()
+
+    f1 = Func_Sphere(limits=[-10, 10])
+    f1.path = [[-8, 8], [-4, 4], [-2, 2], [0, 0]]
+
+    canvas1.draw_contours(function_obj=f1, range_val=f1.limits)
+
+    canvas1.draw_trace(path_points=f1.path)
+    canvas1.show()
         
 if __name__ == "__main__":
     main()
