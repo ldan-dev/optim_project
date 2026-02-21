@@ -32,20 +32,33 @@ class GradientDescent(object):
         - alpha: learning rate
         - max_it: maximum number of iterations
         - tolerance: avoid infinite loop
-        """
-        
+        """          
+
         self.func = func
         self.step_size = step_size
-        self.alpha = alpha # learning rate
+        self.alpha = alpha 
         self.max_it = max_it
         self.tolerance = tolerance
-        self.path = [] # points historial for ploting
+        self.k=0
+        self.path = []
 
-    def solve(self, start_point:float):
-        """  Implementación del algoritmo  """
-        
-        pass
-    
+    def solve(self, start_point: list):
+        """ Implementación del algoritmo """
+        self.path = [] 
+        xk = np.array(start_point, dtype=float)
+        self.path.append(xk.copy()) 
+        for k in range(self.max_it):
+            grad = self.func.diff(xk) 
+            xk_next = xk - (self.alpha * grad)
+            self.path.append(xk_next.copy())
+            if np.linalg.norm(grad) < self.tolerance:
+                print(f"Converged at iteration {k}")
+                break
+            xk = xk_next
+        return xk
+
+
+
     def plot_2d(self):
         """  que grafique cómo fue la trayectoria a la hora de resolverlo  puntos con su linea de path"""
         pass
