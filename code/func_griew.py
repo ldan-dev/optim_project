@@ -29,11 +29,11 @@ class Func_Sphere(Function):
         # return 2 * np.eye(len(x))
         pass
 
-    def plot2d(self, path=None):
+    def plot2d(self, title="griewangk Function Plot", path=None):
         if path is not None:
             self.path = path
 
-        canvas1 = Plot(title="Gráfica de la Esfera")
+        canvas1 = Plot(title)
         canvas1.canvas()
         
         canvas1.draw_contours(function_obj=self, range_val=self.limits)
