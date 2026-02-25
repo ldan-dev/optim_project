@@ -24,7 +24,14 @@ class GradientDescent():
     Docstring for GradientDescent
     """
 
-    def __init__(self, func:Function, step_size=1, alpha=0.01, max_it=10000, tolerance=1e-6): 
+    def __init__(self,
+                func:Function,
+                step_size=1,
+                alpha=0.01,
+                max_it=10000,
+                tolerance=1e-6,
+                cond_step="armijo",
+                descent_dir='dg'): 
         """
         Constructor que definirá los parámetros a usar, las iteraciones máximas, etc
 
@@ -41,6 +48,11 @@ class GradientDescent():
         self.tolerance = tolerance
         self.k=0
         self.path = []
+
+        # select the condition step: 
+
+        # select the descent direction:
+
 
     def solve(self, start_point: list):
         """ Implementación del algoritmo """
@@ -63,7 +75,43 @@ class GradientDescent():
         """  que grafique cómo fue la trayectoria a la hora de resolverlo  puntos con su linea de path"""
         pass
 
+    # -------------
+    # step conditions:
 
+    def armijo_cond(self):
+        """  armijo's Condition  """
+        pass
+
+    # Wolfe Conditions
+
+    def wolf_suf_cond(self):
+        """  Sufficient decrease condition (pag 5)"""
+        pass    
+
+    def wolf_curvat_cond(self):
+        """  Wolfe curvature condition (pag 6)"""
+        pass
+
+    def wolf_strong_cond(self):
+        """  Strong Wolfe Conditions. (pag 7) """
+        pass
+
+    def Goldstein_cond(self):
+        """  Goldstein condition (pag 8)"""
+        pass
+    
+        # select the descent direction:
+
+    def dg_dir(self):
+        """  -gradient """
+        pass
+
+    def h_dir(self):
+        """  la que usa la hessiana """
+        pass
+
+
+    
 def main():
     """  Docstring for main  """
 
