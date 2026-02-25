@@ -9,7 +9,7 @@ DESCRIPTION:
 Implementacion de la funcion de Griewangk
 
 Funcion de Griewangk:
-    f(x) = Σ(x_i²/4000) - Π(cos(x_i/√i)) + 1
+    f(x) = SUM(x_i^2/4000) - MULTIP(cos(x_i/√i)) + 1
     
     donde i = 1, 2, ..., n
     
@@ -43,7 +43,7 @@ class Func_Griew(Function):
         """
         Evaluate the Griewangk function at point x
         
-        f(x) = SUM(x_i²/4000) - MULTIPLICATORIA(cos(x_i/√i)) + 1
+        f(x) = SUM(x_i^2/4000) - MULTIPLICATORIA(cos(x_i/√i)) + 1
         """
         x = np.asarray(x, dtype=float)
         n = len(x)
@@ -121,13 +121,13 @@ def main():
     x_min = np.array([0.0, 0.0])
     print(f"F({x_min}) = {f.eval(x_min)}")  # debe ser 0
     print(f"∇F({x_min}) = {f.diff(x_min)}")  # debe ser [0, 0]
-    print(f"∇²F({x_min}) =\n{f.ddiff(x_min)}")
+    print(f"∇^2F({x_min}) =\n{f.ddiff(x_min)}")
     
     print("\n--- prueba en otro punto ---")
     x_test = np.array([1.0, 2.0])
     print(f"F({x_test}) = {f.eval(x_test)}")
     print(f"∇F({x_test}) = {f.diff(x_test)}")
-    print(f"∇²F({x_test}) =\n{f.ddiff(x_test)}")
+    print(f"∇^2F({x_test}) =\n{f.ddiff(x_test)}")
     
     f.plot_2d()
 
