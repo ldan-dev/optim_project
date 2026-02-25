@@ -44,13 +44,13 @@ def wolfe_descent_cond(func, xk, alpha, pk, c1=1e-4):
 
     Returns
     -------
-    bool
-        True si la condición se satisface, False en caso contrario
-
-    Notes
-    -----
-    Esta condición es idéntica a la condición de Armijo. Se presenta por separado
-    para claridad cuando se usa junto con la condición de curvatura de Wolfe.
     """
-    # TODO: Implementar la condición de descenso suficiente de Wolfe
-    pass
+    f_k = func.eval(xk)
+    grad_k = func.diff(xk)
+    
+    x_next = xk + alpha * pk
+    f_next = func.eval(x_next)
+    
+    dot_product = np.dot(grad_k, pk)
+    
+    return f_next <= f_k + c1 * alpha * dot_product
