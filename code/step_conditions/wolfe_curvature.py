@@ -55,5 +55,21 @@ def wolfe_curvature_cond(func, xk, alpha, pk, c2=0.9):
     condición de descenso suficiente (Armijo/Wolfe descent) para formar
     las condiciones de Wolfe completas.
     """
-    # TODO: Implementar la condición de curvatura de Wolfe
-    pass
+    
+
+    # 1. Calcular el nuevo punto sumando el paso en la dirección p_k
+    x_next = xk + (alpha * pk)
+    
+    # 2. Obtener los gradientes en el punto actual y en el nuevo punto
+    grad_xk = func.diff(xk)
+    grad_next = func.diff(x_next)
+    
+    # 3. Calcular la derivada direccional en ambos puntos (producto punto)
+    # Lado izquierdo (derivada direccional en el nuevo punto)
+    lhs = np.dot(grad_next, pk)
+    
+    # Lado derecho (c2 * derivada direccional en el punto actual)
+    rhs = c2 * np.dot(grad_xk, pk)
+    
+    # 4. Verificamos si se cumple la condición
+    return bool(lhs >= rhs)
