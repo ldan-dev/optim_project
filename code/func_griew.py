@@ -62,37 +62,21 @@ class Func_Griew(Function):
         """
         Return the gradient vector at x (1st derivative)
         
-        ∂f/∂x_j = x_j/2000 + (sin(x_j/√j)/√j) * Π_{i≠j}(cos(x_i/√i))
+        ∂f/∂x_k = x_k/2000 + (1/√k) * tan(x_k/√k) * Π_{i=1}^{n}(cos(x_i/√i))
         """
         x = np.asarray(x, dtype=float)
         n = len(x)
-        grad = np.zeros(n)
         
-        # Precalcular cos(x_i/√i) para todos los i
         i = np.arange(1, n + 1)
-        cos_terms = np.cos(x / np.sqrt(i))
+        sqrt_i = np.sqrt(i)
         
-        # Producto total de todos los cosenos
-        prod_total = np.prod(cos_terms)
+        # Producto completo de todos los cosenos
+        prod_cos = np.prod(np.cos(x / sqrt_i))
         
-        for j in range(n):
-            # Termino de la suma: x_j/2000
-            grad[j] = x[j] / 2000
-            
-            # Termino del producto: (sin(x_j/√(j+1))/√(j+1)) * Π_{i≠j}(cos(x_i/√i))
-            sqrt_j = np.sqrt(j + 1)  # j+1 porque indices empiezan en 0
-            sin_term = np.sin(x[j] / sqrt_j)
-            
-            # Π_{i≠j}(cos(x_i/√i)) = prod_total / cos(x_j/√(j+1))
-            if cos_terms[j] != 0:
-                prod_without_j = prod_total / cos_terms[j]
-            else:
-                # Si cos_terms[j] = 0, calcular el producto sin ese termino
-                mask = np.ones(n, dtype=bool)
-                mask[j] = False
-                prod_without_j = np.prod(cos_terms[mask])
-            
-            grad[j] += (sin_term / sqrt_j) * prod_without_j
+        # Gradiente vectorizado
+        grad = x / 2000 + (1 / sqrt_i) * np.tan(x / sqrt_i) * prod_cos
+        
+        return grad
         
         return grad
 
