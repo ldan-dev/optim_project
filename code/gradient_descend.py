@@ -75,41 +75,41 @@ class GradientDescent():
         """  que grafique cómo fue la trayectoria a la hora de resolverlo  puntos con su linea de path"""
         pass
 
-    # -------------
-    # step conditions:
 
-    def armijo_cond(self):
-        """  armijo's Condition  """
-        pass
+# -------------
+# step conditions:
 
-    # Wolfe Conditions
+def armijo_cond():
+    """  armijo's Condition  """
+    pass
 
-    def wolf_suf_cond(self):
-        """  Sufficient decrease condition (pag 5)"""
-        pass    
+# Wolfe Conditions
 
-    def wolf_curvat_cond(self):
-        """  Wolfe curvature condition (pag 6)"""
-        pass
+def wolf_suf_cond():
+    """  Sufficient decrease condition (pag 5)"""
+    pass    
 
-    def wolf_strong_cond(self):
-        """  Strong Wolfe Conditions. (pag 7) """
-        pass
+def wolf_curvat_cond():
+    """  Wolfe curvature condition (pag 6)"""
+    pass
 
-    def Goldstein_cond(self):
-        """  Goldstein condition (pag 8)"""
-        pass
-    
-        # select the descent direction:
+def wolf_strong_cond():
+    """  Strong Wolfe Conditions. (pag 7) """
+    pass
 
-    def dg_dir(self):
-        """  -gradient """
-        pass
+def Goldstein_cond():
+    """  Goldstein condition (pag 8)"""
+    pass
 
-    def h_dir(self):
-        """  la que usa la hessiana """
-        pass
+    # select the descent direction:
 
+def dg_dir():
+    """  -gradient """
+    pass
+
+def h_dir():
+    """  la que usa la hessiana """
+    pass
 
     
 def main():
