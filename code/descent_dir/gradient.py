@@ -1,55 +1,33 @@
 """
-Negative Gradient Direction (Dirección del Gradiente Negativo)
-==============================================================
-
-La dirección de descenso más simple es el gradiente negativo de la función
-objetivo. Esta es la dirección de máximo descenso local.
-
-La dirección se define como:
+LEONARDO DANIEL AVIÑA NERI
+Fecha: 25/02/2026  (dd/mm/aaaa)
+MAJOR: LIDIA
+Universidad de Guanajuato - Campus Irapuato-Salamanca
+Email: ld.avinaneri@ugto.mx
+UDA: Optimizacion
+DESCRIPTION: 
+La direccion se define como:
     p_k = -grad(f(x_k))
 
 Donde:
     - x_k: punto actual
     - grad(f(x_k)): gradiente de f evaluado en x_k
-    - p_k: dirección de descenso resultante
+    - p_k: direccion de descenso resultante
 
 Propiedades:
-    - Siempre es una dirección de descenso (si grad(f(x_k)) != 0)
-    - Es la dirección de máxima pendiente negativa
+    - Siempre es una direccion de descenso (si grad(f(x_k)) != 0)
+    - Es la direccion de máxima pendiente negativa
     - Convergencia puede ser lenta para funciones mal condicionadas
-
-Referencias:
-    - Nocedal & Wright, "Numerical Optimization", Chapter 2
 """
 
 import numpy as np
+from function import Function
 
-
-def gradient_dir(func, xk):
+def gradient_dir(func: Function, xk:np.ndarray) -> np.ndarray:
     """
-    Calcula la dirección de descenso como el gradiente negativo.
+    Calcula la direccion de descenso como el gradiente negativo.
 
-    Parameters
-    ----------
-    func : Function
-        Objeto función con método diff() para evaluar grad(f(x))
-    xk : np.ndarray
-        Punto actual en el espacio de búsqueda
-
-    Returns
-    -------
-    np.ndarray
-        Dirección de descenso p_k = -grad(f(x_k))
-
-    Notes
-    -----
-    Esta es la dirección más básica de descenso. Es simple pero puede
-    resultar en convergencia lenta para funciones con alto número de condición
-    (eigenvalores de la Hessiana muy diferentes entre sí).
-    
-    Para funciones cuadráticas f(x) = 0.5 * x^T A x - b^T x, el método
-    de gradiente puede requerir muchas iteraciones si los eigenvalores
-    de A tienen gran dispersión.
+    func : objetive funcion con metodo diff() para evaluar grad(f(x))
+    xk : punto actual en el espacio de busqueda
     """
-    # TODO: Implementar la dirección del gradiente negativo
-    pass
+    return -func.diff(xk) # p_k = -grad(f(x_k))
