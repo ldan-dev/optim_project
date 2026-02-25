@@ -19,6 +19,10 @@ import numpy as np
 from plot import Plot # clase Plot
 from function import Function # clase Function
 
+# Importar condiciones de paso y direcciones de descenso
+from step_conditions import CONDITIONS as STEP_CONDITIONS
+from descent_dir import DIRECTIONS as DESCENT_DIRECTIONS
+
 class GradientDescent():
     """
     Docstring for GradientDescent
@@ -50,66 +54,80 @@ class GradientDescent():
         self.path = []
 
         # select the condition step: 
+        if cond_step in STEP_CONDITIONS:
+            self.cond_step = STEP_CONDITIONS[cond_step]
+        else:
+            raise ValueError(f"ERROR: step condition NOT FOUND: {cond_step}. Available: {list(STEP_CONDITIONS.keys())}")
 
         # select the descent direction:
+        if descent_dir in DESCENT_DIRECTIONS:
+            self.descent_dir = DESCENT_DIRECTIONS[descent_dir]
+        else:
+            raise ValueError(f"ERROR: descent direction NOT FOUND: {descent_dir}. Available: {list(DESCENT_DIRECTIONS.keys())}")
 
 
-    def solve(self, start_point: list):
+    def solve(self, start_point: list, verbose=False):
         """ Implementación del algoritmo """
         self.path = [] 
         xk = np.array(start_point, dtype=float)
         self.path.append(xk.copy()) 
+
         for k in range(self.max_it):
             grad = self.func.diff(xk) 
             xk_next = xk - (self.alpha * grad)
             self.path.append(xk_next.copy())
+        
             if np.linalg.norm(grad) < self.tolerance:
-                print(f"Converged at iteration {k}")
+                print(f"Converged at iteration {k}") if verbose else print()
                 break
             xk = xk_next
         return xk
 
+    # def solve(self, start_point: list):
+    #     """ Implementación del algoritmo """
+    #     self.path = [] 
+    #     xk = np.array(start_point, dtype=float)
+    #     self.path.append(xk.copy()) 
+
+    #     for k in range(self.max_it):
+    #         # 1. Calcular dirección de descenso usando la función seleccionada
+    #         pk = self.descent_dir(self.func, xk)
+            
+    #         # 2. Calcular tamaño de paso usando la condición seleccionada
+    #         #    (necesitas implementar una búsqueda de línea que use cond_step)
+    #         alpha = self.line_search(xk, pk)
+            
+    #         # 3. Actualizar punto
+    #         xk_next = xk + alpha * pk
+    #         self.path.append(xk_next.copy())
+        
+    #         # 4. Criterio de convergencia
+    #         grad = self.func.diff(xk)
+    #         if np.linalg.norm(grad) < self.tolerance:
+    #             print(f"Converged at iteration {k}")
+    #             break
+    #         xk = xk_next
+    #     return xk
+
+    def line_search(self, xk, pk,rho = 0.5 ):
+        """
+        Búsqueda de linea usando backtracking con la condición seleccionada.
+        Encuentra alpha que satisfaga self.cond_step
+        """
+        alpha = self.step_size  # empezar con alpha inicial
+        # rho = 0.5  # factor de reducción
+        
+        # Reducir alpha hasta que se cumpla la condición
+        while not self.cond_step(self.func, xk, alpha, pk):
+            alpha *= rho
+            if alpha < 1e-10:  # evitar alpha muy pequeño
+                break
+        return alpha
 
 
     def plot_2d(self):
         """  que grafique cómo fue la trayectoria a la hora de resolverlo  puntos con su linea de path"""
         pass
-
-
-# -------------
-# step conditions:
-
-def armijo_cond():
-    """  armijo's Condition  """
-    pass
-
-# Wolfe Conditions
-
-def wolf_suf_cond():
-    """  Sufficient decrease condition (pag 5)"""
-    pass    
-
-def wolf_curvat_cond():
-    """  Wolfe curvature condition (pag 6)"""
-    pass
-
-def wolf_strong_cond():
-    """  Strong Wolfe Conditions. (pag 7) """
-    pass
-
-def Goldstein_cond():
-    """  Goldstein condition (pag 8)"""
-    pass
-
-    # select the descent direction:
-
-def dg_dir():
-    """  -gradient """
-    pass
-
-def h_dir():
-    """  la que usa la hessiana """
-    pass
 
     
 def main():
