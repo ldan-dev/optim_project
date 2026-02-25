@@ -68,6 +68,10 @@ def hessian_dir(func:Function, xk:np.ndarray) -> np.ndarray:
         Si la Hessiana es singular y no se puede resolver el sistema
     
     """
-    # TODO: Implementar la direccion de Newton
-    # Hint: usar np.linalg.solve(H, -grad) para resolver H * p = -grad
-    pass
+    grad = func.diff(xk)    # gradiente
+    H = func.ddiff(xk)      # hessiana
+    
+    # H * p = -grad
+    pk = np.linalg.solve(H, -grad)
+    
+    return pk
