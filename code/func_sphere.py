@@ -14,33 +14,26 @@ from plot import Plot
 
 class Func_Sphere(Function):
     def __init__(self, limits=[-5, 5]):
+        super().__init__()
         self.limits = limits
-        self.path = [] 
+        self.name = "Esfera"
 
     def eval(self, x: np.ndarray) -> float:
+        x = self._Function__validate_x(x)
         return np.sum(x**2)
 
     def diff(self, x: np.ndarray) -> np.ndarray:
-        return 2 * np.array(x)
+        x = self._Function__validate_x(x)
+        return 2 * x
 
     def ddiff(self, x: np.ndarray) -> np.ndarray:
+        x = self._Function__validate_x(x)
         return 2 * np.eye(len(x))
 
-    def plot2d(self, path=None):
-        if path is not None:
-            self.path = path
-
-        canvas1 = Plot(title="Gráfica de la Esfera")
-        canvas1.canvas()
-        
-        canvas1.draw_contours(function_obj=self, range_val=self.limits)
-        
-        canvas1.draw_trace(path_points=self.path)
-        canvas1.show()
-
 def main():
-    f1 = Func_Sphere(limits=[-10, 10])
-    f1.plot2d(path=[[-8, 8], [-4, 4], [-2, 2], [0, 0]])
-
+    esfera = Func_Sphere(limits=[-10, 10])
+    gd_esfera = GradientDescent(func=esfera, alpha=0.1, max_it=100)
+    gd_esfera.solve(start_point=[8.0, 8.0])
+    gd_esfera.plot_2d()
 if __name__ == "__main__":
     main()
