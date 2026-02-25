@@ -23,9 +23,11 @@ class Func_Sphere(Function):
         pass
 
     def diff(self, x: np.ndarray) -> np.ndarray:
+        """1st derivate (gradient, vector)"""
         pass
 
     def ddiff(self, x: np.ndarray) -> np.ndarray:
+        """2nd derivate (hessian, NxN matrix)"""
         # return 2 * np.eye(len(x))
         pass
 
