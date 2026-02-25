@@ -78,10 +78,7 @@ class Func_Griew(Function):
         return grad
         
 
-    def ddiff(self, x: np.ndarray) -> np.ndarray:
-        """
-        Return the Hessian matrix at x (2nd derivative)
-        """
+    
     def ddiff(self, x: np.ndarray) -> np.ndarray:
         x = np.asarray(x, dtype=float)
         n = len(x)
