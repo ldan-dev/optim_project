@@ -49,7 +49,7 @@ Referencias:
 import numpy as np
 from function import Function
 
-def hessian_dir(func:Function, xk:np.ndarray) -> np.ndarray:
+def newton_dir(func:Function, xk:np.ndarray) -> np.ndarray:
     """
     Calcula la direccion de Newton usando la Hessiana.
 
