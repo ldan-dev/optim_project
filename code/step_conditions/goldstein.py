@@ -59,4 +59,14 @@ def goldstein_cond(func, xk, alpha, pk, c=0.25):
     son generalmente preferidas.
     """
     # TODO: Implementar la condición de Goldstein
-    pass
+    f_xk = func.eval(xk)
+    grad_xk = func.diff(xk)
+    f_next = func.eval(xk + alpha * pk)
+    
+    slope = np.dot(grad_xk, pk)
+    
+    upper_bound = f_xk + c * alpha * slope
+    
+    lower_bound = f_xk + (1 - c) * alpha * slope
+    
+    return lower_bound <= f_next <= upper_bound
