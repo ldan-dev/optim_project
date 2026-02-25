@@ -19,7 +19,7 @@ import numpy as np
 from plot import Plot # clase Plot
 from function import Function # clase Function
 
-class GradientDescent(object):
+class GradientDescent():
     """
     Docstring for GradientDescent
     """
