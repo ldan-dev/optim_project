@@ -1,9 +1,3 @@
-In reports folder put the Latex documents
-remember, use Springer template
-
-
-<!-- 
-
 """
 LEONARDO DANIEL AVIÑA NERI
 Fecha: 25/02/2026  (dd/mm/aaaa)
@@ -15,7 +9,7 @@ DESCRIPTION:
 Implementacion de la funcion de Griewangk
 
 Funcion de Griewangk:
-    f(x) = Σ(x_i²/4000) - Π(cos(x_i/√i)) + 1
+    f(x) = SUM(x_i^2/4000) - MULTIP(cos(x_i/√i)) + 1
     
     donde i = 1, 2, ..., n
     
@@ -49,7 +43,7 @@ class Func_Griew(Function):
         """
         Evaluate the Griewangk function at point x
         
-        f(x) = Σ(x_i²/4000) - Π(cos(x_i/√i)) + 1
+        f(x) = SUM(x_i^2/4000) - MULTIPLICATORIA(cos(x_i/√i)) + 1
         """
         x = np.asarray(x, dtype=float)
         n = len(x)
@@ -57,7 +51,7 @@ class Func_Griew(Function):
         # Termino de suma
         sum_term = np.sum(x**2) / 4000
         
-        # Termino de producto: Π(cos(x_i/√i))
+        # Termino de producto: MULTI(cos(x_i/√i))
         # i va de 1 a n (indice basado en 1)
         i = np.arange(1, n + 1)
         prod_term = np.prod(np.cos(x / np.sqrt(i)))
@@ -68,7 +62,6 @@ class Func_Griew(Function):
         """
         Return the gradient vector at x (1st derivative)
         
-        ∂f/∂x_k = x_k/2000 + (1/√k) * tan(x_k/√k) * Π_{i=1}^{n}(cos(x_i/√i))
         """
         x = np.asarray(x, dtype=float)
         n = len(x)
@@ -76,66 +69,35 @@ class Func_Griew(Function):
         i = np.arange(1, n + 1)
         sqrt_i = np.sqrt(i)
         
-        # Producto completo de todos los cosenos
+        # producto completo de todos los cosenos
         prod_cos = np.prod(np.cos(x / sqrt_i))
         
-        # Gradiente vectorizado
+        # gradiente vectorizado
         grad = x / 2000 + (1 / sqrt_i) * np.tan(x / sqrt_i) * prod_cos
         
         return grad
         
-        return grad
 
+    
     def ddiff(self, x: np.ndarray) -> np.ndarray:
-        """
-        Return the Hessian matrix at x (2nd derivative)
-        
-        Diagonal (j = k):
-        ∂²f/∂x_j² = 1/2000 + (cos(x_j/√j)/j) * Π_{i≠j}(cos(x_i/√i))
-        
-        Off-diagonal (j ≠ k):
-        ∂²f/∂x_j∂x_k = (sin(x_j/√j)*sin(x_k/√k))/(√j*√k) * Π_{i≠j,i≠k}(cos(x_i/√i))
-        """
         x = np.asarray(x, dtype=float)
         n = len(x)
-        H = np.zeros((n, n))
         
-        # Precalcular terminos
         i = np.arange(1, n + 1)
         sqrt_i = np.sqrt(i)
-        cos_terms = np.cos(x / sqrt_i)
-        sin_terms = np.sin(x / sqrt_i)
-        prod_total = np.prod(cos_terms)
         
-        for j in range(n):
-            # Elemento diagonal H[j,j]
-            # 1/2000 + (cos(x_j/√(j+1))/(j+1)) * Π_{i≠j}(cos(x_i/√i))
-            
-            if cos_terms[j] != 0:
-                prod_without_j = prod_total / cos_terms[j]
-            else:
-                mask = np.ones(n, dtype=bool)
-                mask[j] = False
-                prod_without_j = np.prod(cos_terms[mask])
-            
-            H[j, j] = 1/2000 + (cos_terms[j] / (j + 1)) * prod_without_j
-            
-            # Elementos fuera de la diagonal H[j,k] para k > j
-            for k in range(j + 1, n):
-                # (sin(x_j/√(j+1))*sin(x_k/√(k+1)))/(√(j+1)*√(k+1)) * Π_{i≠j,i≠k}(cos)
-                
-                if cos_terms[j] != 0 and cos_terms[k] != 0:
-                    prod_without_jk = prod_total / (cos_terms[j] * cos_terms[k])
-                else:
-                    mask = np.ones(n, dtype=bool)
-                    mask[j] = False
-                    mask[k] = False
-                    prod_without_jk = np.prod(cos_terms[mask])
-                
-                H[j, k] = (sin_terms[j] * sin_terms[k]) / (sqrt_i[j] * sqrt_i[k]) * prod_without_jk
-                H[k, j] = H[j, k]  # Hessiana es simetrica
+        prod_cos = np.prod(np.cos(x / sqrt_i))
+        tan_terms = np.tan(x / sqrt_i)
+        
+        # diagonal: 1/2000 + (1/j) * prod_cos
+        diag = 1/2000 + prod_cos / i
+        
+        # Off-diagonal con outer products
+        H = -prod_cos * np.outer(tan_terms, tan_terms) / np.outer(sqrt_i, sqrt_i)
+        np.fill_diagonal(H, diag)
         
         return H
+    
 
     def plot_2d(self, range_val=[-10, 10], density=200):
         """
@@ -148,26 +110,24 @@ class Func_Griew(Function):
         my_plot.show()
 
 
+
 def main():
     f = Func_Griew()
     
-    # Probar en el minimo global
+    # en el minimo global
     x_min = np.array([0.0, 0.0])
-    print(f"F({x_min}) = {f.eval(x_min)}")  # Debe ser 0
-    print(f"∇F({x_min}) = {f.diff(x_min)}")  # Debe ser [0, 0]
-    print(f"∇²F({x_min}) =\n{f.ddiff(x_min)}")
+    print(f"F({x_min}) = {f.eval(x_min)}")  # debe ser 0
+    print(f"∇F({x_min}) = {f.diff(x_min)}")  # debe ser [0, 0]
+    print(f"∇^2F({x_min}) =\n{f.ddiff(x_min)}")
     
-    print("\n--- Prueba en otro punto ---")
+    print("\n--- prueba en otro punto ---")
     x_test = np.array([1.0, 2.0])
     print(f"F({x_test}) = {f.eval(x_test)}")
     print(f"∇F({x_test}) = {f.diff(x_test)}")
-    print(f"∇²F({x_test}) =\n{f.ddiff(x_test)}")
+    print(f"∇^2F({x_test}) =\n{f.ddiff(x_test)}")
     
-    # Graficar
-    f.plot_2d(range_val=[-10, 10], density=200)
+    f.plot_2d()
 
 
 if __name__ == "__main__":
     main()
-
- -->
