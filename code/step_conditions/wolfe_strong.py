@@ -1,4 +1,11 @@
 """
+LEONARDO DANIEL AVIÑA NERI
+Fecha: 10/02/2026  (dd/mm/aaaa)
+MAJOR: LIDIA
+Universidad de Guanajuato - Campus Irapuato-Salamanca
+Email: ld.avinaneri@ugto.mx
+UDA: 
+DESCRIPTION: 
 Strong Wolfe Conditions (Condiciones Fuertes de Wolfe)
 ======================================================
 
@@ -26,14 +33,12 @@ Referencias:
 """
 
 import numpy as np
+from function import Function
 
-
-def wolfe_strong_cond(func, xk, alpha, pk, c1=1e-4, c2=0.9):
+def wolfe_strong_cond(func:Function, xk:np.ndarray, alpha:float, pk:np.ndarray, c1=1e-4, c2=0.9):
     """
     Evalúa las condiciones fuertes de Wolfe.
 
-    Parameters
-    ----------
     func : Function
         Objeto función con métodos eval() y diff() para evaluar f(x) y grad(f(x))
     xk : np.ndarray
@@ -49,15 +54,20 @@ def wolfe_strong_cond(func, xk, alpha, pk, c1=1e-4, c2=0.9):
         Constante de curvatura, por defecto 0.9.
         Debe estar en (c1, 1)
 
-    Returns
-    -------
     bool
         True si AMBAS condiciones fuertes de Wolfe se satisfacen, False en caso contrario
 
-    Notes
-    -----
     Las condiciones fuertes de Wolfe son más restrictivas que las condiciones
     de Wolfe estándar y son preferidas para métodos quasi-Newton como BFGS.
     """
-    # TODO: Implementar las condiciones fuertes de Wolfe
-    pass
+    xk_next = xk + alpha * pk 
+    fk = func.eval(xk) 
+    fk_n = func.eval(xk_next) 
+    grad_xk = func.diff(xk) 
+    grad_next = func.diff(xk_next) 
+    pendiente = np.dot(grad_xk, pk) 
+    pendiente_n = np.dot(grad_next, pk) 
+    cond1 =fk_n <= fk + c1 * alpha *  pendiente 
+    cond2 = np.abs(pendiente_n) <= c2 * np.abs(pendiente) 
+
+    return bool(cond1 and cond2) 
