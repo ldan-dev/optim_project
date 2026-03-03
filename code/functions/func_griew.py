@@ -39,7 +39,7 @@ class Func_Griew(Function):
         """constructor"""
         super().__init__(params)
         self.name = "Griewangk"
-        self.limits = [-1, 1]  # dominio tipico
+        self.limits = [-3, 3]  # dominio tipico
         # self.limits = [-600, 600]  # dominio tipico
         self.path = []
 
