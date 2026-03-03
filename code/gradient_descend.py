@@ -66,58 +66,58 @@ class GradientDescent():
             raise ValueError(f"ERROR: descent direction NOT FOUND: {descent_dir}. Available: {list(DESCENT_DIRECTIONS.keys())}")
 
 
-    def solve(self, start_point: list, verbose=False):
-        """ Implementación del algoritmo """
-        self.path = [] 
-        xk = np.array(start_point, dtype=float)
-        self.path.append(xk.copy()) 
-
-        for k in range(self.max_it):
-            grad = self.func.diff(xk) 
-            xk_next = xk - (self.alpha * grad)
-            self.path.append(xk_next.copy())
-        
-            if np.linalg.norm(grad) < self.tolerance:
-                print(f"Converged at iteration {k}") if verbose else print()
-                break
-            xk = xk_next
-        return xk
-
-    # def solve(self, start_point: list):
+    # def solve(self, start_point: list, verbose=False):
     #     """ Implementación del algoritmo """
     #     self.path = [] 
     #     xk = np.array(start_point, dtype=float)
     #     self.path.append(xk.copy()) 
 
     #     for k in range(self.max_it):
-    #         # 1. Calcular dirección de descenso usando la función seleccionada
-    #         pk = self.descent_dir(self.func, xk)
-            
-    #         # 2. Calcular tamaño de paso usando la condición seleccionada
-    #         #    (necesitas implementar una búsqueda de línea que use cond_step)
-    #         alpha = self.line_search(xk, pk)
-            
-    #         # 3. Actualizar punto
-    #         xk_next = xk + alpha * pk
+    #         grad = self.func.diff(xk) 
+    #         xk_next = xk - (self.alpha * grad)
     #         self.path.append(xk_next.copy())
         
-    #         # 4. Criterio de convergencia
-    #         grad = self.func.diff(xk)
     #         if np.linalg.norm(grad) < self.tolerance:
-    #             print(f"Converged at iteration {k}")
+    #             print(f"Converged at iteration {k}") if verbose else print()
     #             break
     #         xk = xk_next
     #     return xk
 
+    def solve(self, start_point: list):
+        """ Implementación del algoritmo """
+        self.path = [] 
+        xk = np.array(start_point, dtype=float)
+        self.path.append(xk.copy()) 
+
+        for k in range(self.max_it):
+            # 1. Calcular dirección de descenso usando la función seleccionada
+            pk = self.descent_dir(self.func, xk)
+            
+            # 2. Calcular tamaño de paso usando la condición seleccionada
+            #    (necesitas implementar una búsqueda de línea que use cond_step)
+            alpha = self.line_search(xk, pk)
+            
+            # 3. Actualizar punto
+            xk_next = xk + alpha * pk
+            self.path.append(xk_next.copy())
+        
+            # 4. Criterio de convergencia
+            grad = self.func.diff(xk)
+            if np.linalg.norm(grad) < self.tolerance:
+                print(f"Converged at iteration {k}")
+                break
+            xk = xk_next
+        return xk
+
     def line_search(self, xk, pk,rho = 0.5 ):
         """
-        Búsqueda de linea usando backtracking con la condición seleccionada.
+        busqueda de linea usando backtracking con la condición seleccionada.
         Encuentra alpha que satisfaga self.cond_step
         """
         alpha = self.step_size  # empezar con alpha inicial
         # rho = 0.5  # factor de reducción
         
-        # Reducir alpha hasta que se cumpla la condición
+        # reducir alpha hasta que se cumpla la condición
         while not self.cond_step(self.func, xk, alpha, pk):
             alpha *= rho
             if alpha < 1e-10:  # evitar alpha muy pequeño
