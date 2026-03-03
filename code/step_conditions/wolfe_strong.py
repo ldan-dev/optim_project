@@ -33,9 +33,9 @@ Referencias:
 """
 
 import numpy as np
-from function import Function
+# from function import Function  # Solo para type hints
 
-def wolfe_strong_cond(func:Function, xk:np.ndarray, alpha:float, pk:np.ndarray, c1=1e-4, c2=0.9):
+def wolfe_strong_cond(func, xk:np.ndarray, alpha:float, pk:np.ndarray, c1=1e-4, c2=0.9):
     """
     Evalúa las condiciones fuertes de Wolfe.
 

@@ -18,7 +18,10 @@ Dominio tipico: [-600, 600]^n
 """
 
 import numpy as np
-from function import Function
+try:
+    from .function import Function
+except ImportError:
+    from function import Function
 from plot import Plot
 
 

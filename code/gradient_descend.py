@@ -17,7 +17,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from plot import Plot # clase Plot
-from function import Function # clase Function
+from functions import * # clases Function
+
 
 # Importar condiciones de paso y direcciones de descenso
 from step_conditions import CONDITIONS as STEP_CONDITIONS

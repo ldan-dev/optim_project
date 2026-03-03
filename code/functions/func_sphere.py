@@ -14,7 +14,6 @@ try:
 except ImportError:
     from function import Function
 from plot import Plot
-from gradient_descend import GradientDescent
 
 class Func_Sphere(Function):
     def __init__(self, limits=[-5, 5]):
