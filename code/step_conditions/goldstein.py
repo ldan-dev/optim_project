@@ -25,10 +25,14 @@ Referencias:
     - Nocedal & Wright, "Numerical Optimization", Chapter 3, página 8
 """
 
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import numpy as np
+from functions import Function
 
-
-def goldstein_cond(func, xk, alpha, pk, c=0.25):
+def goldstein_cond(func: Function, xk, alpha, pk, c=0.25):
     """
     Evalúa la condición de Goldstein para un tamaño de paso dado.
 
