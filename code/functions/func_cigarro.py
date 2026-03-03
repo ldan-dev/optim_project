@@ -9,7 +9,10 @@ DESCRIPTION:
 """
 from plot import Plot
 import numpy as np
-from function import Function
+try:
+    from .function import Function
+except ImportError:
+    from function import Function
 
 class Func_Cigarro(Function):
     def __init__(self, limits=[-20, 10]):

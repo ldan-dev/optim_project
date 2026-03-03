@@ -27,9 +27,9 @@ Referencias:
 """
 
 import numpy as np
-from function import Function
+# from function import Function  # Solo para type hints, no necesario
 
-def armijo_cond(func:Function, xk, alpha: float, pk: np.ndarray, c1=1e-4):
+def armijo_cond(func, xk, alpha: float, pk: np.ndarray, c1=1e-4):
     """
     Evalua la condicion de Armijo para un tamaño de paso dado.
 

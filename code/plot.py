@@ -73,10 +73,10 @@ class Plot():
         self.ax.plot(path[:, 0], path[:, 1], 'r--', label = 'Trayectoria', alpha = 0.8)
 
         # 2. Inicio (azul)
-        self.ax.plot(path[-1, 0], path[-1, 1], 'bo', label = "Inicio", markersize = 8)
+        self.ax.plot(path[0, 0], path[0, 1], 'bo', label = "Inicio", markersize = 8)
 
         # 3. Fin (rojo)
-        self.ax.plot(path[-1, 0], path[-1,1], 'rx', label = 'Fin', markersize = 8)
+        self.ax.plot(path[-1, 0], path[-1, 1], 'rx', label = 'Fin', markersize = 8)
 
         self.ax.legend()
 

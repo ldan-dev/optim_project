@@ -9,7 +9,10 @@ DESCRIPTION:
 """
 import numpy as np
 import matplotlib.pyplot as plt
-from function import Function
+try:
+    from .function import Function
+except ImportError:
+    from function import Function
 from plot import Plot
 
 class Func_Sphere(Function):

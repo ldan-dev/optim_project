@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from plot import Plot # clase Plot
-from function import Function # clase Function
+from functions import * # clase Function
 from gradient_descend import GradientDescent # clase GradientDescent
 
 def main():

@@ -47,9 +47,9 @@ Referencias:
 """
 
 import numpy as np
-from function import Function
+# from function import Function  # Solo para type hints
 
-def newton_dir(func:Function, xk:np.ndarray) -> np.ndarray:
+def newton_dir(func, xk:np.ndarray) -> np.ndarray:
     """
     Calcula la direccion de Newton usando la Hessiana.
 

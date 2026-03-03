@@ -18,7 +18,10 @@ Dominio tipico: [-600, 600]^n
 """
 
 import numpy as np
-from function import Function
+try:
+    from .function import Function
+except ImportError:
+    from function import Function
 from plot import Plot
 
 
@@ -36,7 +39,8 @@ class Func_Griew(Function):
         """constructor"""
         super().__init__(params)
         self.name = "Griewangk"
-        self.limits = [-600, 600]  # dominio tipico
+        self.limits = [-1, 1]  # dominio tipico
+        # self.limits = [-600, 600]  # dominio tipico
         self.path = []
 
     def eval(self, x: np.ndarray) -> float:
@@ -121,7 +125,7 @@ def main():
     print(f"∇^2F({x_min}) =\n{f.ddiff(x_min)}")
     
     print("\n--- prueba en otro punto ---")
-    x_test = np.array([1.0, 2.0])
+    x_test = np.array([0.01, 0.02])
     print(f"F({x_test}) = {f.eval(x_test)}")
     print(f"∇F({x_test}) = {f.diff(x_test)}")
     print(f"∇^2F({x_test}) =\n{f.ddiff(x_test)}")
