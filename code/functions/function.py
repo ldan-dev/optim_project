@@ -6,8 +6,8 @@ Universidad de Guanajuato - Campus Irapuato-Salamanca
 Email: ld.avinaneri@ugto.mx
 UDA: OPTIMIZACIÓN
 DESCRIPCIÓN: Clase Function para evaluar la función objetivo del suavizado de Lena.pgm.
-
 """
+
 import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -60,7 +60,6 @@ class Function():
         
 def main():
     """  Docstring for main  """
-
 
 if __name__ == "__main__":
     main()
