@@ -57,3 +57,10 @@ class Function():
     def plot_2d(self, limites: list[float], lienzo: Plot):
         """ Gráfica de la función """
         pass
+        
+def main():
+    """  Docstring for main  """
+
+
+if __name__ == "__main__":
+    main()
