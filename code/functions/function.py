@@ -16,24 +16,27 @@ import numpy as np
 from plot import Plot # clase Plot
 
 class Function(): 
-    def __init__(self, imagen_original: np.ndarray, lmbda: float = 0.1):
+    def __init__(self, imag_ori: np.ndarray, lmbda: float = 0.1):
         """
         Inicializa la función con la imagen y el parámetro lambda.
         Argumentos:
             imagen_original (np.ndarray): lena.pgm como matriz 2D.
             lmbda (float): Parámetro lambda > 0.
         """
-        self.O = np.asarray(imagen_original, dtype=float)
+        
+        self.O = np.asarray(imag_ori, dtype=float) # Toma la imagen_original y la transforma en una matriz (de tipo flotantes)
         self.lmbda = lmbda
         self.forma = self.O.shape
-        self.num_pixeles = self.O.size
+        self.num_pixeles = self.O.size # Guardan las dimensiones de la imagen_original
 
     def eval(self, x: np.ndarray) -> float:
-        """ Evalúa la función objetivo f(x) (Escalar) """
-        x = np.asarray(x, dtype=float)
-        if not isinstance(x, np.ndarray):
-            raise TypeError("x debe ser un arreglo de numpy (numpy.ndarray)")
+        """ 
+        Evalúa la función objetivo 
+        f(x) (Escalar) 
+        """
         
+        x = np.asarray(x, dtype=float)
+
         X = x.reshape(self.forma)
         
         fidelidad = np.sum((self.O - X)**2)
