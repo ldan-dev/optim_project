@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import numpy as np
 from scipy.signal import convolve2d
 from scipy.sparse import diags
-from plot import Plot # clase Plot
+from plot import Plot
 
 class Function(): 
     def __init__(self, original_image: np.ndarray, lmbda: float = 0.1):
@@ -34,10 +34,10 @@ class Function():
         self._hessian = None 
 
     def eval(self, x: np.ndarray) -> float:
-        """ Evalúa la función objetivo f(x) (Escalar) """
+        """ Evalúa la función objetivo f(x) """
         x = np.asarray(x, dtype=float)
         if not isinstance(x, np.ndarray):
-            raise TypeError("x must be a numpy.ndarray")
+            raise TypeError("x debe ser numpy.ndarray")
         
         X = x.reshape(self.shape)
         
@@ -56,24 +56,19 @@ class Function():
         X = x.reshape(self.shape)
         
         # Operador Laplaciano discreto para calcular las diferencias de los vecinos
-        # Kernel basado en tu ecuación: 4X_ij - X_{i+1,j} - X_{i-1,j} - X_{i,j+1} - X_{i,j-1}
         kernel = np.array([[ 0, -1,  0],
                            [-1,  4, -1],
                            [ 0, -1,  0]])
-        
-        # Convolución para aplicar el kernel a toda la imagen rápidamente
         laplaciano = convolve2d(X, kernel, mode='same', boundary='symm')
         
         # Gradiente: -2(O_ij - X_ij) + 4*lambda*(Laplaciano)
         grad = -2 * (self.O - X) + 4 * self.lmbda * laplaciano
         
-        # Retornamos el gradiente aplanado como vector 1D para el optimizador
+        # Gradiente como vector 1D para el optimizador
         return grad.flatten()
 
     def ddiff(self) -> np.ndarray:
         """ 2da derivada (Hessiano) """
-        # Dado que f(x) es cuadrática, el Hessiano es constante y no depende de x.
-        # Si ya lo calculamos, lo retornamos directo.
         if self._hessian is not None:
             return self._hessian
             
@@ -90,7 +85,6 @@ class Function():
         # se conecte con el primer píxel de la siguiente fila
         off_diag_1[cols-1::cols] = 0 
         
-        # Construcción de la matriz dispersa (Sparse Matrix)
         H = diags(
             diagonals=[main_diag, off_diag_1, off_diag_1, off_diag_cols, off_diag_cols],
             offsets=[0, 1, -1, cols, -cols],
@@ -101,8 +95,6 @@ class Function():
         return self._hessian
 
     def plot_2d(self, lim: list[float], canva: Plot):
-        """ Plot de la función (Opcional dependiendo de cómo implementes tu clase Plot) """
-        # Nota: Graficar una función de N dimensiones en 2D es complejo.
-        # Por lo general, en procesamiento de imágenes, aquí se grafica 
-        # la imagen actual X frente a la original O.
+        """ Plot de la función """
+        
         pass
