@@ -21,7 +21,7 @@ class Pre_Gradient_Conjugate:
         Implementación de Jacobi Preconditioning: M = diag(Hessian)
         Retornamos la inversa de M para facilitar el cálculo y_k = M^-1 * g_k
         """
-        H = self.func.hessian(x)
+        H = self.func.ddiff(x)
         diag = np.diag(H)
         # Evitamos división por cero
         diag_inv = np.array([1/d if abs(d) > 1e-12 else 1.0 for d in diag])
@@ -38,7 +38,7 @@ class Pre_Gradient_Conjugate:
         yk = M_inv @ gk
         pk = -yk  # Dirección inicial 
         for k in range(self.max_it):
-            A = self.func.hessian(xk)
+            A = self.func.ddiff(xk)
             Apk = A @ pk
             
             # 2. Calcular alpha_k (Tamaño de paso óptimo para cuadráticas)
