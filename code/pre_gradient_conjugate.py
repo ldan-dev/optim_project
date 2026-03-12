@@ -1,13 +1,5 @@
-import matplotlib.pyplot as plt
 import numpy as np
 
-from plot import Plot # clase Plot
-from functions import * # clases Function
-
-from step_conditions import CONDITIONS as STEP_CONDITIONS
-from descent_dir import DIRECTIONS as DESCENT_DIRECTIONS
-
-import numpy as np
 
 class Pre_Gradient_Conjugate:
     def __init__(self, func, max_it=5000, tolerance=1e-6):
@@ -22,9 +14,9 @@ class Pre_Gradient_Conjugate:
         Retornamos la inversa de M para facilitar el cálculo y_k = M^-1 * g_k
         """
         H = self.func.ddiff(x)
-        diag = np.diag(H)
-        # Evitamos división por cero
-        diag_inv = np.array([1/d if abs(d) > 1e-12 else 1.0 for d in diag])
+        diag_H = np.diag(H) if H.ndim > 1 else H 
+        
+        diag_inv = 1.0 / diag_H
         return np.diag(diag_inv)
 
     def solve(self, start_point: list):
