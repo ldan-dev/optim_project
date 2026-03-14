@@ -8,6 +8,7 @@ UDA:
 DESCRIPTION: 
 main del ejercicio 2
 
+TODO: alguno cree una rama que se llame xs02/main
 """
 
 import matplotlib.pyplot as plt
