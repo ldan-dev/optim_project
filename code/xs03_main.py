@@ -67,7 +67,7 @@ def main():
 	args = parser.parse_args()
 
 	ruta_imagen = _resolve_image_path(args.image)
-	lam = 0.15
+	lam = 100.15
 	max_it = 120
 	tol = 1e-4
 
