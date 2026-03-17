@@ -1,4 +1,11 @@
 """
+LEONARDO DANIEL AVIÑA NERI
+Fecha: 13/03/2026  (dd/mm/aaaa)
+MAJOR: LIDIA
+Universidad de Guanajuato - Campus Irapuato-Salamanca
+Email: ld.avinaneri@ugto.mx
+UDA:
+DESCRIPTION:
 Conjugate Gradient Method (vanilla y preconditioned)
 para resolver sistemas SPD del tipo:
 
