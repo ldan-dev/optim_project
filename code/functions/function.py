@@ -109,7 +109,54 @@ class Function():
         pass
 
 def main(): 
-    """  Docstring for main  """ 
+    """  
+    Bloque de prueba para verificar que la función opere correctamente 
+    y mostrar la imagen original vs suavizada.
+    """ 
+    import matplotlib.pyplot as plt
+    
+    # Cargar la imagen
+    try:
+        imagen_original = plt.imread('lena.pgm')
+        if imagen_original.max() <= 1.0:
+            imagen_original = imagen_original * 255.0
+    except FileNotFoundError:
+        print("Aviso: No se encontró 'lena.pgm'. Generando imagen de prueba con ruido...")
+        imagen_original = np.random.randint(0, 256, (128, 128))
+
+    ruido = np.random.normal(0, 25, imagen_original.shape)
+    imagen_ruidosa = np.clip(imagen_original + ruido, 0, 255)
+  
+    # Lambda de prueba
+    f = Function(imag_ori=imagen_ruidosa, lmbda=0.5)
+
+    # Descenso de Gradiente para suavizar la imagen
+    print("Suavizando imagen...")
+    x_actual = imagen_ruidosa.flatten()
+    alpha = 0.05  # Tamaño de paso
+    
+    for iteracion in range(50):
+        grad = f.diff(x_actual)
+        x_actual = x_actual - alpha * grad
+        
+        if (iteracion+1) % 10 == 0:
+            print(f"Iteración {iteracion+1}/50 completada")
+
+    imagen_suavizada = x_actual.reshape(f.forma)
+
+    # Generar original vs suavizada
+    fig, axes = plt.subplots(1, 2, figsize=(10, 5))
+    
+    axes[0].imshow(imagen_ruidosa, cmap='gray', vmin=0, vmax=255)
+    axes[0].set_title('Imagen Original (Con Ruido)')
+    axes[0].axis('off')
+    
+    axes[1].imshow(imagen_suavizada, cmap='gray', vmin=0, vmax=255)
+    axes[1].set_title(f'Imagen Suavizada ($\lambda$={f.lmbda})')
+    axes[1].axis('off')
+    
+    plt.tight_layout()
+    plt.show()
 
 if __name__ == "__main__": 
     main()
