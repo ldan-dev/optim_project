@@ -1,68 +1,97 @@
-import matplotlib.pyplot as plt
+"""
+LEONARDO DANIEL AVIÑA NERI
+Fecha: 13/03/2026  (dd/mm/aaaa)
+MAJOR: LIDIA
+Universidad de Guanajuato - Campus Irapuato-Salamanca
+Email: ld.avinaneri@ugto.mx
+UDA:
+DESCRIPTION:
+Conjugate Gradient Method (vanilla y preconditioned)
+para resolver sistemas SPD del tipo:
+
+    A x = b
+
+en este proyecto, típicamente provenientes de una función cuadrática.
+"""
+
 import numpy as np
 
-from plot import Plot 
-from functions import *
-from gradient_descend import GradientDescent
 
-class ConjugateGradient(GradientDescent):
-    def __init__(self, func, max_it, tolerance=1e-6):
-        super().__init__(func, alpha=0, max_it=max_it)
+class ConjugateGradientSolver:
+    def __init__(self, max_it: int = 200, tolerance: float = 1e-6):
+        self.max_it = max_it
         self.tolerance = tolerance
         self.path = []
+        self.residual_norms = []
 
-    def solve(self, start_point: list, verbose=False):
-        self.path = []
-        xo = np.array(start_point, dtype=float)
-        self.path.append(xo.copy())
-        g = self.func.diff(xo)
-        p = -g
-        k = 0
-        while np.linalg.norm(g) > self.tolerance and k < self.max_it:
-            A_mx = self.func.ddiff(xo)
-            Apk = A_mx @ p
-            denom_alpha = p.T @ Apk
-            if abs(denom_alpha) < 1e-15: 
-                break 
-            alpha = (g.T @ g) / denom_alpha
-            xo = xo + alpha * p
-            self.path.append(xo.copy())
-            g_next = self.func.diff(xo)
-            beta = (g_next.T @ g_next) / (g.T @ g)
-            p_next = -g_next + beta * p
-            g = g_next
-            p = p_next
-            k = k + 1
-            if verbose:
-                print(f"Iteracion {k}: Error (Norma g) = {np.linalg.norm(g)}")
-                
-        return xo
-if __name__ == "__main__":
-    class FuncSuavizado:
-        def __init__(self, b_ruidoso):
-            self.b = np.array(b_ruidoso, dtype=float)
-            n = len(self.b)
-            # Matriz A que penaliza cambios bruscos (Suavizado)
-            self.A = np.eye(n) * 2
-            for i in range(n-1):
-                self.A[i, i+1] = self.A[i+1, i] = -1
+    def _run_cg(self, apply_A, b, x0, preconditioner=None):
+        xk = np.asarray(x0, dtype=float).reshape(-1)
+        b = np.asarray(b, dtype=float).reshape(-1)
 
-        def diff(self, x): 
-            return (self.A @ x) - self.b
-            
-        def ddiff(self, x): 
-            return self.A
+        if xk.size != b.size:
+            raise ValueError("x0 y b deben tener la misma dimensión")
 
-    # 1. Pixeles con un "salto" y ruido
-    # Imagina que la imagen deberia ser [0,0,0,10,10,10]
-    pixeles_ruido = [0.1, -0.2, 0.5, 9.8, 10.2, 9.5]
-    
-    f_img = FuncSuavizado(pixeles_ruido)
-    cg = ConjugateGradient(func=f_img, max_it=20)
-    
-    # 2. Resolver
-    suave = cg.solve(start_point=pixeles_ruido, verbose=True)
-    
-    print("\n--- PRUEBA DE SUAVIZADO DE PIXELES ---")
-    print(f"Originales (con ruido): {pixeles_ruido}")
-    print(f"Suavizados (resultado): {np.round(suave, 2)}")
+        gk = apply_A(xk) - b  # residuo del gradiente
+        if preconditioner is None:
+            zk = gk.copy()
+        else:
+            zk = preconditioner(gk)
+
+        pk = -zk
+
+        self.path = [xk.copy()]
+        self.residual_norms = [np.linalg.norm(gk)]
+
+        if self.residual_norms[-1] < self.tolerance:
+            return xk
+
+        for _ in range(self.max_it):
+            Apk = apply_A(pk)
+            denom = float(np.dot(pk, Apk))
+            if abs(denom) < 1e-20:
+                break
+
+            if preconditioner is None:
+                num = float(np.dot(gk, gk))
+            else:
+                num = float(np.dot(gk, zk))
+
+            alpha = num / denom
+            xk_new = xk + alpha * pk
+            gk_new = gk + alpha * Apk
+
+            self.path.append(xk_new.copy())
+            self.residual_norms.append(np.linalg.norm(gk_new))
+
+            if self.residual_norms[-1] < self.tolerance:
+                xk = xk_new
+                break
+
+            if preconditioner is None:
+                beta = float(np.dot(gk_new, gk_new)) / max(float(np.dot(gk, gk)), 1e-20)
+                pk = -gk_new + beta * pk
+            else:
+                zk_new = preconditioner(gk_new)
+                beta = float(np.dot(gk_new, zk_new)) / max(float(np.dot(gk, zk)), 1e-20)
+                pk = -zk_new + beta * pk
+                zk = zk_new
+
+            xk, gk = xk_new, gk_new
+
+        return xk
+
+    def solve_vanilla(self, apply_A, b, x0):
+        """Conjugate Gradient estándar (sin precondicionador)."""
+        return self._run_cg(apply_A=apply_A, b=b, x0=x0, preconditioner=None)
+
+    def solve_preconditioned(self, apply_A, b, x0, M_diag):
+        """
+        Preconditioned CG con precondicionador de Jacobi:
+            M = diag(A)
+        """
+        M_diag = np.asarray(M_diag, dtype=float).reshape(-1)
+
+        def jacobi_preconditioner(g):
+            return g / np.maximum(M_diag, 1e-12)
+
+        return self._run_cg(apply_A=apply_A, b=b, x0=x0, preconditioner=jacobi_preconditioner)

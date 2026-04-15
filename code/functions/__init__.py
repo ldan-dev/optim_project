@@ -14,6 +14,7 @@ from .func_sphere import Func_Sphere
 from .func_rosen import Func_Rosen
 from .func_griew import Func_Griew
 from .func_cigarro import Func_Cigarro
+from .func_smoothing import Func_Smoothing
 
 __all__ = [
     "Function",
@@ -21,4 +22,5 @@ __all__ = [
     "Func_Rosen",
     "Func_Griew",
     "Func_Cigarro",
+    "Func_Smoothing",
 ]

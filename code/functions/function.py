@@ -20,8 +20,17 @@ class Function():
     """
     Docstring for Function
     """
-    def __init__(self, params):
-        pass
+    def __init__(self, params=None):
+        self.params = params
+
+    def __validate_x(self, x: np.ndarray) -> np.ndarray:
+        """Valida y convierte x a vector numpy 1D numérico."""
+        x = np.asarray(x, dtype=float)
+        if x.ndim != 1:
+            raise ValueError("x must be a 1D vector")
+        if not np.issubdtype(x.dtype, np.number):
+            raise TypeError("x must have numerical elements")
+        return x
 
     def eval(self, x: np.ndarray) -> np.ndarray:
         """Evaluate the function"""
@@ -34,13 +43,13 @@ class Function():
         
         # todo: implement function
 
-    def diff(self) -> np.ndarray:
+    def diff(self, x: np.ndarray) -> np.ndarray:
         """  1st derivate  """
-        pass
+        raise NotImplementedError("diff method must be implemented in subclass")
 
-    def ddiff(self) -> np.ndarray:
+    def ddiff(self, x: np.ndarray) -> np.ndarray:
         """  2nd derivate  """
-        pass
+        raise NotImplementedError("ddiff method must be implemented in subclass")
 
     def plot_2d(self, lim:list[float], canva:Plot ):
         """  plot the function:  """
