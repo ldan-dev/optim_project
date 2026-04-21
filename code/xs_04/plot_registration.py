@@ -56,10 +56,13 @@ class RegistrationPlotter:
             theta = AffineModel6.validate_theta(theta)
             t1, t2, t3, t4, t5, t6 = theta
             h, w = moving_img.shape
-            rows, cols = np.meshgrid(np.arange(h), np.arange(w), indexing='ij')
-            X_warp = t1 * cols + t2 * rows + t3
-            Y_warp = t4 * cols + t5 * rows + t6
-            coords = np.stack([Y_warp, X_warp])
+            # Convención: i=fila (eje-0), j=columna (eje-1)
+            # fila* = t1*i + t2*j + t3
+            # col*  = t4*i + t5*j + t6
+            i_c, j_c = np.meshgrid(np.arange(h), np.arange(w), indexing='ij')
+            row_warp = t1 * i_c + t2 * j_c + t3
+            col_warp = t4 * i_c + t5 * j_c + t6
+            coords = np.stack([row_warp, col_warp])
             warped_img = map_coordinates(moving_img.astype(float), coords,
                                          order=1, mode='constant', cval=0.0)
 
