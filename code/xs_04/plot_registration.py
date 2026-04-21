@@ -6,15 +6,18 @@ Visualización base para registro afín:
 """
 
 import os
+import sys
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.ndimage import map_coordinates
+
 
 class RegistrationPlotter:
     def __init__(self, title = "Resultados del Registro Afín", figsize = (15, 5)):
         self.title = title
         self.figsize = figsize
         self.fig = None
-        self:axes = None
+        self.axes = None
 
     def show_registration_results(self, img_fixed, img_moving, img_resultant, 
                                   title1="I_1 (Original)", 
@@ -41,6 +44,38 @@ class RegistrationPlotter:
 
         plt.tight_layout()
         plt.show()
+
+    def show(self, fixed_img: np.ndarray, moving_img: np.ndarray,
+             theta: np.ndarray = None, warped_img: np.ndarray = None):
+        """
+        Método conveniente usado por xs04_main.py.
+        Si warped_img es None pero theta es dado, aplica el warp.
+        """
+        if warped_img is None and theta is not None:
+            from xs_04.modelo import AffineModel6
+            theta = AffineModel6.validate_theta(theta)
+            t1, t2, t3, t4, t5, t6 = theta
+            h, w = moving_img.shape
+            rows, cols = np.meshgrid(np.arange(h), np.arange(w), indexing='ij')
+            X_warp = t1 * cols + t2 * rows + t3
+            Y_warp = t4 * cols + t5 * rows + t6
+            coords = np.stack([Y_warp, X_warp])
+            warped_img = map_coordinates(moving_img.astype(float), coords,
+                                         order=1, mode='constant', cval=0.0)
+
+        if warped_img is None:
+            warped_img = moving_img
+
+        self.show_registration_results(
+            img_fixed=fixed_img,
+            img_moving=moving_img,
+            img_resultant=warped_img,
+        )
+
+
+# Alias para compatibilidad con xs04_main.py
+RegistrationPlot = RegistrationPlotter
+
 
 # Función para cargar las imágenes
 def load_image(file_path):
