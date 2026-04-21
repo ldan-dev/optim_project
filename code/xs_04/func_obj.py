@@ -14,6 +14,7 @@ import sys
 import numpy as np
 from scipy.ndimage import map_coordinates
 
+# Permite ejecutar `python code/xs_04/xs04_main.py`
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
@@ -24,7 +25,7 @@ from xs_04.modelo import AffineModel6
 
 class AffineRegistrationObjective(Function):
     """
-    f(theta) = || I0 - X(Im, theta) ||^2
+    f(t) = 1/2 * || I0 - X(Im, t) ||^2
     
     Implementación basada en la Suma de Diferencias al Cuadrado (SSD)
     evaluando la intensidad de todos los píxeles de la imagen.
@@ -39,10 +40,11 @@ class AffineRegistrationObjective(Function):
         if self.fixed_img.shape != self.moving_img.shape:
             raise ValueError("Las imágenes fixed y moving deben tener la misma forma.")
 
-        # 1. Gradiente con regla de la cadena
+        # 1. Gradiente espacial (D_t V_m*) mediante diferencias centrales
+        # np.gradient aproxima exactamente la ecuación: (v[i+1] - v[i-1]) / 2
         self.grad_y, self.grad_x = np.gradient(self.moving_img)
 
-        # 2. Malla de coordenadas de la imagen fija
+        # 2. Malla de coordenadas de la imagen fija (I0)
         h, w = self.fixed_img.shape
         self.y_coords, self.x_coords = np.meshgrid(np.arange(h), np.arange(w), indexing='ij')
 
@@ -55,7 +57,7 @@ class AffineRegistrationObjective(Function):
         """
         theta = AffineModel6.validate_theta(theta)
         
-        # Según AffineModel6:
+        # Convención estricta de AffineModel6:
         t1, t2, t3, t4, t5, t6 = theta
 
         # x* = t1*x + t2*y + t5
@@ -76,7 +78,8 @@ class AffineRegistrationObjective(Function):
         warped_img, _, _ = self._warp_and_gradients(theta)
         residual = self.fixed_img - warped_img
         
-        return float(np.sum(residual**2))
+        # f(t) = 1/2 sum( (V_o - V_m*)^2 )
+        return 0.5 * float(np.sum(residual**2))
 
     def diff(self, theta: np.ndarray) -> np.ndarray:
         warped_img, warped_gx, warped_gy = self._warp_and_gradients(theta)
@@ -85,28 +88,28 @@ class AffineRegistrationObjective(Function):
         x = self.x_coords
         y = self.y_coords
 
-        # dX*/dt1 = x,  dX*/dt2 = y,  dX*/dt5 = 1
-        # dY*/dt3 = x,  dY*/dt4 = y,  dY*/dt6 = 1
+        # Calculamos d V_m* / dt = X^T * [grad_x, grad_y]^T
+        # Respetando los índices [t1, t2, t3, t4, t5, t6] de AffineModel6:
         dV_dt0 = warped_gx * x
         dV_dt1 = warped_gx * y
         dV_dt2 = warped_gy * x
         dV_dt3 = warped_gy * y
-        dV_dt4 = warped_gx * 1.0
-        dV_dt5 = warped_gy * 1.0
+        dV_dt4 = warped_gx * 1.0  # Traslación X (t5)
+        dV_dt5 = warped_gy * 1.0  # Traslación Y (t6)
 
-        # Gradiente: df/d_theta = -2 * suma( residual * (dV/d_theta) )
+        # Gradiente: df(t)/dt = - sum( residual * (d V_m* / dt) )
+        # Desaparece el multiplicador 2 por la cancelación con el 1/2 de f(t)
         grad = np.zeros(AffineModel6.N_PARAMS, dtype=float)
-        grad[0] = -2.0 * np.sum(residual * dV_dt0)
-        grad[1] = -2.0 * np.sum(residual * dV_dt1)
-        grad[2] = -2.0 * np.sum(residual * dV_dt2)
-        grad[3] = -2.0 * np.sum(residual * dV_dt3)
-        grad[4] = -2.0 * np.sum(residual * dV_dt4)
-        grad[5] = -2.0 * np.sum(residual * dV_dt5)
+        grad[0] = -np.sum(residual * dV_dt0)
+        grad[1] = -np.sum(residual * dV_dt1)
+        grad[2] = -np.sum(residual * dV_dt2)
+        grad[3] = -np.sum(residual * dV_dt3)
+        grad[4] = -np.sum(residual * dV_dt4)
+        grad[5] = -np.sum(residual * dV_dt5)
 
         return grad
 
     def ddiff(self, theta: np.ndarray) -> np.ndarray:
-        # BFGS aproxima el Hessiano, no es necesario calcularlo.
         raise NotImplementedError("El algoritmo BFGS aproxima el Hessiano no se requiere")
 
     @classmethod
@@ -116,12 +119,10 @@ class AffineRegistrationObjective(Function):
 
 def main():
     """Prueba mínima de la función objetivo con matrices de prueba."""
-    # Simulamos una imagen fija y una móvil
     fixed = np.ones((10, 10))
     moving = np.ones((10, 10)) * 0.5
     
     obj = AffineRegistrationObjective(fixed, moving)
-    
     theta0 = AffineModel6.identity_theta()
     
     print("=== Evaluación Inicial ===")
