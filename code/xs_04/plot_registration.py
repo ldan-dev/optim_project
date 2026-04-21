@@ -1,58 +1,88 @@
 """
 Visualización base para registro afín:
-- imagen fija
-- imagen móvil
-- (opcional) imagen móvil transformada
-- vector theta (6 parámetros)
+- Imagen fija
+- Imagen móvil
+- Imagen móvil transformada
 """
 
-import numpy as np
+import os
 import matplotlib.pyplot as plt
+import numpy as np
 
-
-class RegistrationPlot:
-    def __init__(self, title: str = "Registro afín", figsize=(14, 5)):
+class RegistrationPlotter:
+    def __init__(self, title = "Resultados del Registro Afín", figsize = (15, 5)):
         self.title = title
         self.figsize = figsize
+        self.fig = None
+        self:axes = None
 
-    def _theta_text(self, theta: np.ndarray) -> str:
-        theta = np.asarray(theta, dtype=float).reshape(-1)
-        lines = [f"theta{i+1}: {theta[i]: .5f}" for i in range(min(theta.size, 6))]
-        return "\n".join(lines)
+    def show_registration_results(self, img_fixed, img_moving, img_resultant, 
+                                  title1="I_1 (Original)", 
+                                  title2="I_2 (Transformada)", 
+                                  title3="Corregida"):
+        """
+        Crea una visualización de tres imágenes una al lado de la otra.
+        
+        Args:
+            img_fixed (numpy.ndarray): Matriz de la imagen de referencia.
+            img_moving (numpy.ndarray): Matriz de la imagen distorsionada.
+            img_resultant (numpy.ndarray): Matriz de la imagen móvil corregida.
+        """
+        self.fig, self.axes = plt.subplots(1, 3, figsize=self.figsize)
+        self.fig.suptitle(self.title, fontsize=16)
 
-    def show(self, fixed_img: np.ndarray, moving_img: np.ndarray, theta: np.ndarray, warped_img: np.ndarray | None = None):
-        fixed_img = np.asarray(fixed_img)
-        moving_img = np.asarray(moving_img)
+        images = [img_fixed, img_moving, img_resultant]
+        titles = [title1, title2, title3]
 
-        ncols = 3 if warped_img is not None else 2
-        fig, axes = plt.subplots(1, ncols, figsize=self.figsize)
-        fig.suptitle(self.title, fontsize=14)
-
-        if ncols == 2:
-            ax_fixed, ax_moving = axes
-        else:
-            ax_fixed, ax_moving, ax_warped = axes
-
-        ax_fixed.imshow(fixed_img, cmap="gray")
-        ax_fixed.set_title("Imagen fija")
-        ax_fixed.axis("off")
-
-        ax_moving.imshow(moving_img, cmap="gray")
-        ax_moving.set_title("Imagen móvil")
-        ax_moving.axis("off")
-
-        if ncols == 3:
-            ax_warped.imshow(warped_img, cmap="gray")
-            ax_warped.set_title("Móvil transformada")
-            ax_warped.axis("off")
-
-        fig.text(
-            0.82,
-            0.52,
-            self._theta_text(theta),
-            fontsize=10,
-            bbox={"boxstyle": "round", "facecolor": "white", "alpha": 0.9},
-        )
+        for i in range(3):
+            self.axes[i].imshow(images[i], cmap='gray')
+            self.axes[i].set_title(titles[i])
+            self.axes[i].axis('off')
 
         plt.tight_layout()
         plt.show()
+
+# Función para cargar las imágenes
+def load_image(file_path):
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"Error: El archivo '{file_path}' no existe.")
+    
+    # Recibe una imagen, devuelve una matriz
+    image_matrix = plt.imread(file_path)
+    return image_matrix
+
+
+# *** Código de prueba ***
+def main():
+    print("** Prueba de Visualización para Registro de Imágenes Médicas **")
+
+    # Nombres de los archivos
+    filename_fixed = "I_1.pgm"
+    filename_moving = "I_6.pgm"
+
+    try:
+        print(f"Cargando {filename_fixed}...")
+        img_fixed = load_image(filename_fixed)
+        print(f"[{filename_fixed}] cargada exitosamente. Dimensiones de la matriz: {img_fixed.shape}")
+
+        print(f"Cargando {filename_moving}...")
+        img_moving = load_image(filename_moving)
+        print(f"[{filename_moving}] cargada exitosamente. Dimensiones de la matriz: {img_moving.shape}")
+
+        # Imagen resultante (en este caso la misma q la original)
+        print("Simulando imagen resultante (placeholder)...")
+        img_resultant = img_fixed.copy() 
+
+        plotter = RegistrationPlotter(title="Prueba de Visualización de Registro de Imagen")
+
+        print("Generando visualización...")
+        plotter.show_registration_results(img_fixed, img_moving, img_resultant)
+
+    except FileNotFoundError as err:
+        print(err)
+    except Exception as e:
+        print(f"Ocurrió un error inesperado al leer los archivos: {e}")
+        print("Asegúrate de que 'I_1.pgm' e 'I_6.pgm' son archivos de imagen válidos.")
+
+if __name__ == "__main__":
+    main()
