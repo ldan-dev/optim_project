@@ -1,113 +1,129 @@
 """
 LEONARDO DANIEL AVIÑA NERI
-Fecha: 15/04/2026  (dd/mm/aaaa)
-MAJOR: LIDIA
-Universidad de Guanajuato - Campus Irapuato-Salamanca
-Email: ld.avinaneri@ugto.mx
-UDA: 
-DESCRIPTION: 
+Fecha: 20/04/2026
+UDA: Optimización
+DESCRIPTION: BFGS con punto inicial aleatorio de gran escala (-100 a 100).
 """
 
 import os
 import sys
 import numpy as np
-
-# Permite ejecutar el módulo directo desde /code
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if ROOT not in sys.path:
-    sys.path.insert(0, ROOT)
-
-from step_conditions import CONDITIONS
-from descent_dir import DIRECTIONS
-
+import matplotlib.pyplot as plt
 
 class BFGSOptimizer:
-    """
-    Esqueleto base de BFGS:
-    - Usa `Function.eval` y `Function.diff`
-    - Usa `step_conditions` para búsqueda de línea
-    - Puede usar `descent_dir` como fallback inicial
-    """
-
-    def __init__(
-        self,
-        func,
-        max_it: int = 100,
-        tolerance: float = 1e-6,
-        cond_step: str = "wolfe_strong",
-        descent_dir: str = "gradient",
-        alpha0: float = 1.0,
-        rho: float = 0.5,
-    ):
+    def __init__(self, func, max_it=2000, tolerance=1e-7, alpha0=1.0, rho=0.5):
         self.func = func
         self.max_it = max_it
         self.tolerance = tolerance
         self.alpha0 = alpha0
         self.rho = rho
-
-        if cond_step not in CONDITIONS:
-            raise ValueError(f"step condition no encontrada: {cond_step}")
-        self.cond_step = CONDITIONS[cond_step]
-
-        if descent_dir not in DIRECTIONS:
-            raise ValueError(f"descent direction no encontrada: {descent_dir}")
-        self.descent_dir = DIRECTIONS[descent_dir]
-
         self.path = []
-        self.grad_norms = []
 
-    def _line_search(self, xk: np.ndarray, pk: np.ndarray) -> float:
-        alpha = self.alpha0
-        while not self.cond_step(self.func, xk, alpha, pk):
-            alpha *= self.rho
-            if alpha < 1e-12:
+    def line_search(self, xk, pk):
+        alpha = float(self.alpha0)
+        fk = self.func.eval(xk)
+        gk = self.func.diff(xk)
+        while True:
+            xk_next = xk + alpha * pk
+            if self.func.eval(xk_next) <= fk + 1e-4 * alpha * np.dot(gk, pk):
                 break
+            alpha *= self.rho
+            if alpha < 1e-16: break
         return alpha
 
-    def solve(self, x0: np.ndarray) -> np.ndarray:
-        xk = np.asarray(x0, dtype=float).reshape(-1)
-        n = xk.size
-        Hk = np.eye(n, dtype=float)
-
-        self.path = [xk.copy()]
-        self.grad_norms = []
-
-        for _ in range(self.max_it):
+    def solve(self, x0):
+        xk = np.array(x0, dtype=float).ravel()
+        n = len(xk)
+        Hk = np.eye(n)
+        self.path = [] 
+        
+        for i in range(self.max_it):
+            self.path.append(xk.copy())
             gk = self.func.diff(xk)
-            gnorm = np.linalg.norm(gk)
-            self.grad_norms.append(float(gnorm))
-            if gnorm < self.tolerance:
+            if np.linalg.norm(gk) < self.tolerance:
                 break
 
-            # BFGS: p_k = -H_k g_k; fallback a gradiente si es necesario.
-            pk = -Hk @ gk
-            if np.dot(pk, gk) >= 0:
-                pk = self.descent_dir(self.func, xk)
+            pk = -(Hk @ gk)
+            if np.dot(gk, pk) > 0:
+                Hk = np.eye(n)
+                pk = -gk
 
-            alpha = self._line_search(xk, pk)
-            x_next = xk + alpha * pk
-
-            sk = x_next - xk
-            g_next = self.func.diff(x_next)
-            yk = g_next - gk
-
-            ys = float(np.dot(yk, sk))
-            if ys > 1e-12:
+            alpha = self.line_search(xk, pk)
+            sk = alpha * pk
+            xk_next = xk + sk
+            
+            yk = self.func.diff(xk_next) - gk
+            ys = np.dot(yk, sk)
+            
+            if abs(ys) > 1e-12:
                 rho_k = 1.0 / ys
                 I = np.eye(n)
-                # Update BFGS de la inversa Hessiana.
-                Hk = (I - rho_k * np.outer(sk, yk)) @ Hk @ (I - rho_k * np.outer(yk, sk)) + rho_k * np.outer(sk, sk)
-
-            xk = x_next
-            self.path.append(xk.copy())
-
+                A1 = I - rho_k * np.outer(sk, yk)
+                A2 = I - rho_k * np.outer(yk, sk)
+                Hk = A1 @ Hk @ A2 + (rho_k * np.outer(sk, sk))
+            else:
+                Hk = np.eye(n)
+            
+            xk = xk_next
         return xk
+class RosenbrockND:
+    def eval(self, x):
+        x = np.asarray(x).ravel()
+        return float(np.sum(100.0 * (x[1:] - x[:-1]**2)**2 + (1.0 - x[:-1])**2))
+        
+    def diff(self, x):
+        x = np.asarray(x).ravel()
+        grad = np.zeros_like(x)
+        if len(x) < 2: return grad
+        grad[:-1] += -400 * x[:-1] * (x[1:] - x[:-1]**2) - 2 * (1 - x[:-1])
+        grad[1:] += 200 * (x[1:] - x[:-1]**2)
+        return grad
 
+def graficar_proyeccion_2d(optimizer, func, x0):
+    x_range = np.linspace(-110, 110, 150)
+    y_range = np.linspace(-110, 110, 150)
+    X, Y = np.meshgrid(x_range, y_range)
+    Z = np.zeros_like(X)
+    
+    for i in range(len(x_range)):
+        for j in range(len(y_range)):
+            Z[j, i] = 100 * (Y[j, i] - X[j, i]**2)**2 + (1 - X[j, i])**2
 
-def main():
-    """Base mínima: el uso completo está en xs04_main.py."""
-    print("BFGS base listo.")
+    path = np.array(optimizer.path)
+
+    plt.figure(figsize=(12, 8))
+    levels = np.logspace(-0.5, 9, 30)
+    plt.contourf(X, Y, Z, levels=levels, cmap='magma', alpha=0.6)
+    
+    plt.plot(path[:, 0], path[:, 1], color='white', linewidth=3, alpha=0.5, zorder=3)
+    plt.plot(path[:, 0], path[:, 1], color='red', marker='o', markersize=3, 
+             linewidth=1, label='Trayectoria BFGS (Proyección x1, x2)', zorder=4)
+    
+    plt.plot(path[0, 0], path[0, 1], 'go', markersize=10, label='Inicio Aleatorio', zorder=5)
+    plt.plot(1, 1, 'cyan', marker='*', markersize=18, label='Óptimo (1,1)', zorder=5, markeredgecolor='black')
+
+    plt.title(f'Optimización BFGS desde punto aleatorio [-100, 100]\nDimensiones totales: {len(x0)} | Pasos: {len(path)}', fontsize=13)
+    plt.xlabel('Variable x1')
+    plt.ylabel('Variable x2')
+    plt.legend()
+    plt.colorbar(label='f(x)')
+    plt.show()
 
 
 if __name__ == "__main__":
-    main()
+    f_nd = RosenbrockND()
+    opt = BFGSOptimizer(f_nd)
+    
+    dimensiones = 20
+    x0_aleatorio = np.random.uniform(-100, 100, dimensiones)
+    
+    print(f"--- INICIANDO PRUEBA EN {dimensiones}D ---")
+    print(f"Punto inicial (primeros 5): {x0_aleatorio[:5]}")
+    
+    solucion = opt.solve(x0_aleatorio)
+    
+    print("-" * 40)
+    print(f"Finalizado en {len(opt.path)} iteraciones.")
+    print(f"Distancia final al óptimo: {np.linalg.norm(solucion - 1):.2e}")
+    
+    graficar_proyeccion_2d(opt, f_nd, x0_aleatorio)
