@@ -52,7 +52,7 @@ python -m pip install -r requirements.txt
 
 
 # Team
-- [Leonardo Daniel Aviña Neri](mailto:ld.avinaneri@ugto.mx)
+- Author: [Leonardo Daniel Aviña Neri](mailto:ld.avinaneri@ugto.mx)
 <!-- - [nombre](correo)  -->
 <!-- - [Email 2](mailto:daniel.avina.neri@gmail.com) -->
 
